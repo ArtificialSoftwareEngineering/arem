@@ -1,0 +1,8 @@
+Refactoring,Class,LOC,NOM,RFC,CBO,DIT,MPC,LCOM5,LCOM2,NOC,CYCLO,DAC
+PUF-1,unalcol.evolution.genotype.binary.varlength.VariableLengthBinaryGenotype,24.0,--,--,4.0,--,--,0.7222222222222223,0.6190476190476191,--,--,3.0,
+PUF-1,unalcol.evolution.genotype.binary.BinaryGenotype,21.0,--,--,3.0,--,--,0.9,0.75,--,--,2.0,
+PUF-2,unalcol.evolution.genotype.binary.varlength.VariableLengthBinaryGenotype,24.0,--,--,4.0,--,--,0.611111111111111,0.5238095238095238,--,--,3.0,
+PUF-2,unalcol.evolution.genotype.binary.BinaryGenotype,21.0,--,--,3.0,--,--,0.9,0.75,--,--,2.0,
+PUF-3,unalcol.evolution.genotype.binary.varlength.VariableLengthBinaryGenotype,26.0,--,--,4.0,--,--,0.7999999999999999,0.6857142857142857,--,--,5.0,
+PUF-3,unalcol.evolution.genotype.binary.BinaryGenotype,19.0,--,--,4.0,--,--,0.0,0.0,--,--,0.0,
+PUF-3,unalcol.ca.CambrianExtinctionCA,49.0,--,--,3.0,--,--,1.2,1.0,--,--,-1.0,

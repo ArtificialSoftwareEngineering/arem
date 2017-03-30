@@ -111,29 +111,52 @@ public final class InspectRefactor {
         return feasible;
     }
 
-    //Feasibility feature reusable code
-    public boolean insExtSrcClass(RefactoringOperation ref) {
-        List<TypeDeclaration> src = new ArrayList<TypeDeclaration>();
+    /**
+     * Verify if the class has override parents or children
+     * True for NO overriding
+     * False for overriding
+     * @return
+     */
 
-        if (ref.getParams() != null) {
-            if (ref.getParams().get("src") != null) {
-                if (!ref.getParams().get("src").isEmpty()) {
-                    for (RefactoringParameter param_src : ref.getParams().get("src")) {
-                        //New class verification
-                        if (param_src.getObjState().equals(CodeObjState.NEW))
-                            return false;
-                        src.add((TypeDeclaration) param_src.getCodeObj());
+    public static boolean nonOverrideVerificationParentsAndChildren(List<String> value_src,
+                                                                    List<String> value_mtd){
+        boolean feasible = true;
+        for (String src_type : value_src) {
+            //Override verification parents
+            if (MetaphorCode.getBuilder().getParentClasses().get(src_type) != null)
+                if (!MetaphorCode.getBuilder().getParentClasses().get(src_type).isEmpty()) {
+                    for (TypeDeclaration clase : MetaphorCode.getBuilder().getParentClasses().get(src_type)) {
+                        if (MetaphorCode.getMethodsFromClass(clase) != null)
+                            if (!MetaphorCode.getMethodsFromClass(clase).isEmpty()) {
+                                for (String method : MetaphorCode.getMethodsFromClass(clase)) {
+                                    if (method.equals(value_mtd.get(0))) {
+                                        feasible = false;
+                                        break;
+                                    }
+                                }
+                            }
                     }
-                } else {
-                    return false;
                 }
-            } else {
-                return false;
+
+            if (feasible) {
+                //Override verification children
+                if (MetaphorCode.getBuilder().getChildClasses().get(src_type) != null)
+                    if (!MetaphorCode.getBuilder().getChildClasses().get(src_type).isEmpty()) {
+                        for (TypeDeclaration clase_child : MetaphorCode.getBuilder().getChildClasses().get(src_type)) {
+                            if (MetaphorCode.getMethodsFromClass(clase_child) != null)
+                                if (!MetaphorCode.getMethodsFromClass(clase_child).isEmpty()) {
+                                    for (String method : MetaphorCode.getMethodsFromClass(clase_child)) {
+                                        if (method.equals(value_mtd.get(0))) {
+                                            feasible = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                        }
+                    }
             }
-        } else {
-            return false;
         }
-        return true;
+        return feasible;
     }
 
 }

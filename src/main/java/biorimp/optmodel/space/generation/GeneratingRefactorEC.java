@@ -46,15 +46,14 @@ public class GeneratingRefactorEC extends GeneratingRefactor {
             paramsMF = new ArrayList<OBSERVRefParam>();
             paramsMM = new ArrayList<OBSERVRefParam>();
 
-            //Creating the OBSERVRefParam for the src class
-
+            //2. Creating the OBSERVRefParam for the src class
             sysType_src = MetaphorCode.getMapClass().get(g.generate());
             List<String> value_src = new ArrayList<String>();
             value_src.add(sysType_src.getQualifiedName());
             paramsMF.add(new OBSERVRefParam("src", value_src));
             paramsMM.add(new OBSERVRefParam("src", value_src));
 
-            //Creating the OBSERVRefParam for the mtd class
+            //3. Creating the OBSERVRefParam for the mtd class
             List<String> value_mtd = new ArrayList<String>();
             if (!MetaphorCode.getMethodsFromClass(sysType_src).isEmpty()) {
                 IntUniform numMtdObs = new IntUniform(MetaphorCode.getMethodsFromClass(sysType_src).size());
@@ -62,53 +61,24 @@ public class GeneratingRefactorEC extends GeneratingRefactor {
                 value_mtd.add((String) MetaphorCode.getMethodsFromClass(sysType_src).toArray()
                         [numMtdObs.generate()]);
 
-                //+Verification of method not constructor
-//				if(value_mtd.get(0).equals(sysType_src.getName()))
-//					feasible = false;
+                //Verification of method not constructor
                 feasible = InspectRefactor.inspectMethodNotConstructor(value_mtd, sysType_src);
 
                 if (feasible) {
                     //Override verification parents
-                    if (MetaphorCode.getBuilder().getParentClasses().get(sysType_src.getQualifiedName()) != null)
-                        if (!MetaphorCode.getBuilder().getParentClasses().get(sysType_src.getQualifiedName()).isEmpty()) {
-                            for (TypeDeclaration clase : MetaphorCode.getBuilder().getParentClasses().get(sysType_src.getQualifiedName())) {
-                                if (MetaphorCode.getMethodsFromClass(clase) != null)
-                                    if (!MetaphorCode.getMethodsFromClass(clase).isEmpty()) {
-                                        for (String method : MetaphorCode.getMethodsFromClass(clase)) {
-                                            if (method.equals(value_mtd.get(0))) {
-                                                feasible = false;
-                                                break;
-                                            }
-                                        }
-                                    }
-                            }
-                        }
+                    feasible = InspectRefactor.inspectOverrideParents(value_mtd, sysType_src);
                     if (feasible) {
                         //Override verification children
-                        if (MetaphorCode.getBuilder().getChildClasses().get(sysType_src.getQualifiedName()) != null)
-                            if (!MetaphorCode.getBuilder().getChildClasses().get(sysType_src.getQualifiedName()).isEmpty()) {
-                                for (TypeDeclaration clase : MetaphorCode.getBuilder().getChildClasses().get(sysType_src.getQualifiedName())) {
-                                    if (MetaphorCode.getMethodsFromClass(clase) != null)
-                                        if (!MetaphorCode.getMethodsFromClass(clase).isEmpty()) {
-                                            for (String method : MetaphorCode.getMethodsFromClass(clase)) {
-                                                if (method.equals(value_mtd.get(0))) {
-                                                    feasible = false;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                }
-                            }
+                        feasible = InspectRefactor.inspectOverrideChildren(value_mtd, sysType_src);
                     }
                 }
-
 
                 paramsMM.add(new OBSERVRefParam("mtd", value_mtd));
             } else {
                 feasible = false;
             }
 
-            //Creating the OBSERVRefParam for the fld field
+            //4. Creating the OBSERVRefParam for the fld field
             List<String> value_fld = new ArrayList<String>();
             if (!MetaphorCode.getFieldsFromClass(sysType_src).isEmpty()) {
                 IntUniform numFldObs = new IntUniform(MetaphorCode.getFieldsFromClass(sysType_src).size());
@@ -123,7 +93,7 @@ public class GeneratingRefactorEC extends GeneratingRefactor {
 
         } while (!feasible); //Generate Just feasible individuals
 
-        //Creating the OBSERVRefParam for the tgt
+        //5. Creating the OBSERVRefParam for the tgt
         //This Target Class is not inside metaphor
         List<String> value_tgt = new ArrayList<String>();
         value_tgt.add(sysType_src.getPack() + newClass + "|N");
@@ -139,10 +109,10 @@ public class GeneratingRefactorEC extends GeneratingRefactor {
     }
 
     @Override
-    public OBSERVRefactoring repairRefactor(RefactoringOperation ref, int break_point) {
+    public OBSERVRefactoring repairRefactor(RefactoringOperation ref) {
         // TODO Auto-generated method stub
-        OBSERVRefactoring refRepair = null;
-        int counter = 0;
+        OBSERVRefactoring refRepair;
+
         String newClass = "TgtClassEC";
 
         boolean feasible;
@@ -152,90 +122,61 @@ public class GeneratingRefactorEC extends GeneratingRefactor {
         TypeDeclaration sysType_src;
         IntUniform g = new IntUniform(MetaphorCode.getMapClass().size());
 
-        do {
-            feasible = true;
-            paramsMF = new ArrayList<OBSERVRefParam>();
-            paramsMM = new ArrayList<OBSERVRefParam>();
+        feasible = true;
+        paramsMF = new ArrayList<OBSERVRefParam>();
+        paramsMM = new ArrayList<OBSERVRefParam>();
 
-            //Creating the OBSERVRefParam for the src class
+        //1. Creating the OBSERVRefParam for the src class
+        if (ref.getSubRefs() != null) {
+            if (!ref.getSubRefs().get(0).getParams().get("src").isEmpty()) {
 
-            //sysType_src = code.getMapClass().get( g.generate()  );
-            if (ref.getSubRefs() != null) {
-                if (!ref.getSubRefs().get(0).getParams().get("src").isEmpty()) {
-
-                    sysType_src = (TypeDeclaration) ref.getSubRefs().get(0).getParams().get("src").get(0).getCodeObj();
-                } else {
-                    if (!ref.getParams().get("src").isEmpty())
-                        sysType_src = (TypeDeclaration) ref.getParams().get("src").get(0).getCodeObj();
-                    else
-                        sysType_src = MetaphorCode.getMapClass().get(g.generate());
-                }
-
+                sysType_src = (TypeDeclaration) ref.getSubRefs().get(0).getParams().get("src").get(0).getCodeObj();
             } else {
-                sysType_src = MetaphorCode.getMapClass().get(g.generate());
+                if (!ref.getParams().get("src").isEmpty())
+                    sysType_src = (TypeDeclaration) ref.getParams().get("src").get(0).getCodeObj();
+                else
+                    sysType_src = MetaphorCode.getMapClass().get(g.generate());
             }
 
-            List<String> value_src = new ArrayList<String>();
-            value_src.add(sysType_src.getQualifiedName());
-            paramsMF.add(new OBSERVRefParam("src", value_src));
-            paramsMM.add(new OBSERVRefParam("src", value_src));
+        } else {
+            sysType_src = MetaphorCode.getMapClass().get(g.generate());
+        }
+
+        List<String> value_src = new ArrayList<String>();
+        value_src.add(sysType_src.getQualifiedName());
+        paramsMF.add(new OBSERVRefParam("src", value_src));
+        paramsMM.add(new OBSERVRefParam("src", value_src));
 
 
-            //Creating the OBSERVRefParam for the mtd class
-            List<String> value_mtd = new ArrayList<String>();
-            if (!MetaphorCode.getMethodsFromClass(sysType_src).isEmpty()) {
-                IntUniform numMtdObs = new IntUniform(MetaphorCode.getMethodsFromClass(sysType_src).size());
+        //2. Creating the OBSERVRefParam for the mtd class
+        List<String> value_mtd = new ArrayList<String>();
+        if (!MetaphorCode.getMethodsFromClass(sysType_src).isEmpty()) {
+            IntUniform numMtdObs = new IntUniform(MetaphorCode.getMethodsFromClass(sysType_src).size());
 
-                value_mtd.add((String) MetaphorCode.getMethodsFromClass(sysType_src).toArray()
-                        [numMtdObs.generate()]);
+            value_mtd.add((String) MetaphorCode.getMethodsFromClass(sysType_src).toArray()
+                    [numMtdObs.generate()]);
 
-                //verification of method not constructor
-                if (value_mtd.get(0).equals(sysType_src.getName()))
-                    feasible = false;
-
-                if (feasible) {
-                    //Override verification parents
-                    if (MetaphorCode.getBuilder().getParentClasses().get(sysType_src.getQualifiedName()) != null)
-                        if (!MetaphorCode.getBuilder().getParentClasses().get(sysType_src.getQualifiedName()).isEmpty()) {
-                            for (TypeDeclaration clase : MetaphorCode.getBuilder().getParentClasses().get(sysType_src.getQualifiedName())) {
-                                if (MetaphorCode.getMethodsFromClass(clase) != null)
-                                    if (!MetaphorCode.getMethodsFromClass(clase).isEmpty()) {
-                                        for (String method : MetaphorCode.getMethodsFromClass(clase)) {
-                                            if (method.equals(value_mtd.get(0))) {
-                                                feasible = false;
-                                                break;
-                                            }
-                                        }
-                                    }
-                            }
-                        }
-                    if (feasible) {
-                        //Override verification children
-                        if (MetaphorCode.getBuilder().getChildClasses().get(sysType_src.getQualifiedName()) != null)
-                            if (!MetaphorCode.getBuilder().getChildClasses().get(sysType_src.getQualifiedName()).isEmpty()) {
-                                for (TypeDeclaration clase : MetaphorCode.getBuilder().getChildClasses().get(sysType_src.getQualifiedName())) {
-                                    if (MetaphorCode.getMethodsFromClass(clase) != null)
-                                        if (!MetaphorCode.getMethodsFromClass(clase).isEmpty()) {
-                                            for (String method : MetaphorCode.getMethodsFromClass(clase)) {
-                                                if (method.equals(value_mtd.get(0))) {
-                                                    feasible = false;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                }
-                            }
-                    }
-                }
-
-
-                paramsMM.add(new OBSERVRefParam("mtd", value_mtd));
-            } else {
+            //verification of method not constructor
+            if (value_mtd.get(0).equals(sysType_src.getName()))
                 feasible = false;
-                break;
+
+            if (feasible) {
+                //Override verification parents
+                feasible = InspectRefactor.inspectOverrideParents(value_mtd, sysType_src);
+                if (feasible) {
+                    //Override verification children
+                    feasible = InspectRefactor.inspectOverrideChildren(value_mtd, sysType_src);
+                }
             }
 
-            //Creating the OBSERVRefParam for the fld field
+
+            paramsMM.add(new OBSERVRefParam("mtd", value_mtd));
+        } else {
+            feasible = false;
+        }
+
+        if (feasible) {
+            //3. Creating the OBSERVRefParam for the fld field
             List<String> value_fld = new ArrayList<String>();
             if (!MetaphorCode.getFieldsFromClass(sysType_src).isEmpty()) {
                 IntUniform numFldObs = new IntUniform(MetaphorCode.getFieldsFromClass(sysType_src).size());
@@ -247,23 +188,16 @@ public class GeneratingRefactorEC extends GeneratingRefactor {
             } else {
                 feasible = false;
             }
+        }
 
-            counter++;
-
-            //if(!feasible && counter < break_point )
-            if (counter < break_point)
-                break;
-
-        } while (!feasible); //Generate Just feasible individuals
-
-        if (!feasible || counter < break_point) {
+        if (!feasible) {
             //Penalty
             ref.getPenalty().add(penaltyReGeneration);
             refRepair = generatingRefactor(ref.getPenalty());
         } else {
             //Penalty
             ref.getPenalty().add(penaltyRepair);
-            //Creating the OBSERVRefParam for the tgt
+            //4. Creating the OBSERVRefParam for the tgt
             //This Target Class is not inside metaphor
             List<String> value_tgt = new ArrayList<String>();
             value_tgt.add(sysType_src.getPack() + newClass + "|N");

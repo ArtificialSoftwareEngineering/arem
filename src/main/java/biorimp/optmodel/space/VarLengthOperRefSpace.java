@@ -209,7 +209,7 @@ public class VarLengthOperRefSpace extends Space<List<RefactoringOperation>> {
                     default:
                         specificRefactor = new GeneratingRefactorEC();
                 }//END CASE
-                refactorings.add(specificRefactor.repairRefactor(refOp, break_point));
+                refactorings.add(specificRefactor.repairRefactor(refOp));
             } else {
                 repaired.add(refOp);
             }
@@ -291,8 +291,10 @@ public class VarLengthOperRefSpace extends Space<List<RefactoringOperation>> {
                     randomRefactor = new GeneratingRefactorIM();
             }//END CASE
 
-            //System.out.println( "Refactor [ " + Refactoring.values()[mapRefactor] + "]");
-            refactorings.add(randomRefactor.generatingRefactor(new ArrayList<Double>()));
+            OBSERVRefactoring candidateRef = randomRefactor.generatingRefactor(new ArrayList<Double>());
+            if (candidateRef != null){
+                refactorings.add(candidateRef);
+            }
 
         }
 

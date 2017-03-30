@@ -15,10 +15,13 @@ import edu.wayne.cs.severe.redress2.controller.MetricUtils;
 import edu.wayne.cs.severe.redress2.controller.metric.CodeMetric;
 import edu.wayne.cs.severe.redress2.entity.ProgLang;
 import edu.wayne.cs.severe.redress2.entity.TypeDeclaration;
+import edu.wayne.cs.severe.redress2.entity.refactoring.CodeObjState;
+import edu.wayne.cs.severe.redress2.entity.refactoring.RefactoringOperation;
 import edu.wayne.cs.severe.redress2.io.MetricsReader;
 import edu.wayne.cs.severe.redress2.main.MainPredFormulasBIoRIPM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import unalcol.random.integer.IntUniform;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +43,8 @@ public final class MetaphorCode {
     protected static RefactoringReaderBIoRIMP refactorReader;
     private static HierarchyBuilder builder;
     private static List<TypeDeclaration> sysTypeDcls;
+    private static List<TypeDeclaration> classesWithFields;
+    private static List<TypeDeclaration> classesWithInheritance;
     private static HashMap<Integer, TypeDeclaration> mapClass =
             new HashMap<Integer, TypeDeclaration>();
     private static HashMap<Integer, TypeDeclaration> mapNewClass =
@@ -48,6 +53,7 @@ public final class MetaphorCode {
     private static ArrayList<CodeMetric> metrics;
     private static File systemPath;
     private static String sysName;
+
     private static int COUNTER = 0;
     private static LinkedHashMap<String, LinkedHashMap<String, Double>> prevMetrics;
 
@@ -59,8 +65,12 @@ public final class MetaphorCode {
         this.builder = init.getBuilder();
         this.lang = init.getLang();
         this.metrics = init.getMetrics();
+
         bitAssignerClass();
         previousMetricsCalculation();
+
+        classesWithFields = setMapClassWithFields(sysTypeDcls);
+        classesWithInheritance = setMapClassWithInheritance(sysTypeDcls);
     }
 
     public static double getPenaltyReGeneration() {
@@ -122,6 +132,57 @@ public final class MetaphorCode {
         return builder;
     }
 
+    //Return a Builder just with Classes that contains fields
+    private static List<TypeDeclaration> setMapClassWithFields(
+            List<TypeDeclaration> sysTypeDcls
+    ) {
+        List<TypeDeclaration> mapClassFields = new ArrayList<>();
+        for (TypeDeclaration typeDcl : sysTypeDcls) {
+            if (!getFieldsFromClass(typeDcl).isEmpty())
+                mapClassFields.add(typeDcl);
+        }
+
+        return mapClassFields;
+    }
+
+    private static List<TypeDeclaration> setMapClassWithInheritance(
+            List<TypeDeclaration> sysTypeDcls
+    ) {
+        List<TypeDeclaration> mapClassInheritance = new ArrayList<>();
+        if (!getBuilder().getChildClasses().isEmpty()) {
+            for (TypeDeclaration typeDcl1 : sysTypeDcls) {
+                //Check if it has children
+                String s = typeDcl1.getQualifiedName();
+                if (!MetaphorCode.getBuilder().getChildClasses().get(typeDcl1.getQualifiedName()).isEmpty()) {
+                    for (TypeDeclaration childClass :
+                            MetaphorCode.getBuilder().getChildClasses().get(typeDcl1.getQualifiedName())) {
+                        if (sysTypeDcls.contains(childClass)) {
+                            mapClassInheritance.add(typeDcl1);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return mapClassInheritance;
+    }
+
+    public static List<TypeDeclaration> getClassesWithFields() {
+        return classesWithFields;
+    }
+
+    public static List<TypeDeclaration> getClassesWithInheritance() {
+        return classesWithInheritance;
+    }
+
+    public static List<TypeDeclaration> getClassesWithInheritanceAndFields() {
+        List<TypeDeclaration> clonFields = new ArrayList<>(getClassesWithFields());
+        List<TypeDeclaration> clonInheritance = new ArrayList<>(getClassesWithInheritance());
+        clonInheritance.retainAll(clonFields);
+        return clonInheritance;
+    }
+
     public static List<TypeDeclaration> getSysTypeDcls() {
         return sysTypeDcls;
     }
@@ -170,13 +231,12 @@ public final class MetaphorCode {
 
     }
 
+
     //Method for assigning a bit representation to each Class
     private void bitAssignerClass() {
         //BitArray array;
         int i = 0;
         for (TypeDeclaration typeDcl : sysTypeDcls) {
-            //array = new BitArray(tamBitArray,false);
-            //BitArrayConverter.setNumber(array, 0, tamBitArray, i++); //set number inside bitarray
             typeDcl.setId(i);
             this.mapClass.put(i++, typeDcl);
         }

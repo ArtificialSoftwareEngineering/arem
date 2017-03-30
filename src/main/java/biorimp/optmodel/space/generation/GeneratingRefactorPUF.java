@@ -5,6 +5,7 @@ package biorimp.optmodel.space.generation;
 
 import biorimp.optmodel.mappings.metaphor.MetaphorCode;
 import biorimp.optmodel.space.Refactoring;
+import biorimp.optmodel.space.reapairing.RepairingRefactor;
 import edu.wayne.cs.severe.redress2.entity.TypeDeclaration;
 import edu.wayne.cs.severe.redress2.entity.refactoring.CodeObjState;
 import edu.wayne.cs.severe.redress2.entity.refactoring.RefactoringOperation;
@@ -28,8 +29,13 @@ public class GeneratingRefactorPUF extends GeneratingRefactor {
 
         boolean feasible;
         List<OBSERVRefParam> params;
+
+        int counterPUF = 0; //<-- 1.
+        int break_point = MetaphorCode.getMapClass().size();//Number of Classes
+
         IntUniform g = new IntUniform(MetaphorCode.getMapClass().size());
-        TypeDeclaration sysType_src = null;
+        IntUniform numFldObs;
+        TypeDeclaration sysType_src;
         TypeDeclaration sysType_tgt;
         List<String> value_src;
         List<String> value_fld = null;
@@ -39,7 +45,7 @@ public class GeneratingRefactorPUF extends GeneratingRefactor {
         do {
             feasible = true;
             params = new ArrayList<OBSERVRefParam>();
-            //Creating the OBSERVRefParam for the tgt/super class
+            //2. Creating the OBSERVRefParam for the tgt/super class
             value_tgt = new ArrayList<String>();
             sysType_tgt = MetaphorCode.getMapClass().get(g.generate());
             value_tgt.add(sysType_tgt.getQualifiedName());
@@ -47,22 +53,23 @@ public class GeneratingRefactorPUF extends GeneratingRefactor {
             //Creating the OBSERVRefParam for the src class
             value_src = new ArrayList<String>();
 
-            //verification of SRCSubClassTGT
+            //3. verification of SRCSubClassTGT
             if (!MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName()).isEmpty()) {
-                List<TypeDeclaration> clases = MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName());
-                IntUniform indexClass = new IntUniform(clases.size());
-                sysType_src = clases.get(indexClass.generate()); //RandomlySelectedClass
+                List<TypeDeclaration> childrenClasses = MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName());
+                IntUniform indexClass = new IntUniform(childrenClasses.size());
+                //4. RandomlySelectedClass
+                sysType_src = childrenClasses.get(indexClass.generate());
 
-                //Creating the OBSERVRefParam for the fld field
+                //5. Creating the OBSERVRefParam for the fld field
                 value_fld = new ArrayList<String>();
                 if (!MetaphorCode.getFieldsFromClass(sysType_src).isEmpty()) {
-
-                    IntUniform numFldObs = new IntUniform(MetaphorCode.getFieldsFromClass(sysType_src).size());
+                    // 6. Pick up a field from the src class
+                    numFldObs = new IntUniform(MetaphorCode.getFieldsFromClass(sysType_src).size());
                     value_fld.add((String) MetaphorCode.getFieldsFromClass(sysType_src).toArray()
                             [numFldObs.generate()]);
 
-                    //Choosing other src(s) with the fld
-                    for (TypeDeclaration clase : clases) {
+                    //Identifying other src(s) with the fld
+                    for (TypeDeclaration clase : childrenClasses) {
                         for (String field : MetaphorCode.getFieldsFromClass(clase)) {
                             if (field.equals(value_fld.get(0))) {
                                 value_src.add(clase.getQualifiedName());
@@ -77,6 +84,12 @@ public class GeneratingRefactorPUF extends GeneratingRefactor {
             } else {
                 feasible = false;
             }
+
+            counterPUF++;
+            if (counterPUF > break_point) {
+                feasible = false;
+                break;
+            }
         } while (!feasible);
 
         params.add(new OBSERVRefParam("src", value_src));
@@ -87,68 +100,54 @@ public class GeneratingRefactorPUF extends GeneratingRefactor {
     }
 
     @Override
-    public OBSERVRefactoring repairRefactor(RefactoringOperation ref, int break_point) {
+    public OBSERVRefactoring repairRefactor(RefactoringOperation ref) {
         // TODO Auto-generated method stub
         OBSERVRefactoring refRepair = null;
-        int counter = 0;
+
+        int counterPUF = 0; //<-- 1.
+
 
         boolean feasible;
         List<OBSERVRefParam> params;
-        IntUniform g = new IntUniform(MetaphorCode.getMapClass().size());
         TypeDeclaration sysType_src = null;
-        TypeDeclaration sysType_tgt = null;
+        TypeDeclaration sysType_tgt = RepairingRefactor.extractTGTforRepairing(ref); //<-2.
         List<String> value_src;
         List<String> value_fld = null;
         List<String> value_tgt;
+        IntUniform numFldObs;
 
 
-        do {
-            feasible = true;
-            params = new ArrayList<OBSERVRefParam>();
-            //Creating the OBSERVRefParam for the tgt/super class
-            value_tgt = new ArrayList<String>();
-            //sysType_tgt = code.getMapClass().get( g.generate() );
-            //sysType_tgt = (TypeDeclaration) ref.getParams().get("tgt").get(0).getCodeObj();
-            if (ref.getParams() != null) {
-                if (ref.getParams().get("tgt") != null) {
-                    if (!ref.getParams().get("tgt").isEmpty()) {
-                        //New class verification in tgt class
-                        if (ref.getParams().get("tgt").get(0).getObjState().equals(CodeObjState.NEW))
-                            sysType_tgt = MetaphorCode.getMapClass().get(g.generate());
-                        else
-                            sysType_tgt = (TypeDeclaration) ref.getParams().get("tgt").get(0).getCodeObj(); //Assumes the first tgt class of a set of classes
-                    } else {
-                        sysType_tgt = MetaphorCode.getMapClass().get(g.generate());
-                    }
-                } else {
-                    sysType_tgt = MetaphorCode.getMapClass().get(g.generate());
-                }
-            } else {
-                sysType_tgt = MetaphorCode.getMapClass().get(g.generate());
-            }
+        params = new ArrayList<OBSERVRefParam>();
+        //Creating the OBSERVRefParam for the tgt/super class
 
-            value_tgt.add(sysType_tgt.getQualifiedName());
+        value_tgt = new ArrayList<String>();
+        value_tgt.add(sysType_tgt.getQualifiedName());
 
-            //Creating the OBSERVRefParam for the src class
-            value_src = new ArrayList<String>();
+        //Creating the OBSERVRefParam for the src class
+        value_src = new ArrayList<String>();
 
-            //verification of SRCSubClassTGT
-            if (MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName()) != null) {
-                if (!MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName()).isEmpty()) {
-                    List<TypeDeclaration> clases = MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName());
-                    IntUniform indexClass = new IntUniform(clases.size());
-                    sysType_src = clases.get(indexClass.generate()); //RandomlySelectedClass
+        //3. Verification of SRCSubClassTGT
+        if (MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName()) != null) {
+            if (!MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName()).isEmpty()) {
+                //4. Getting Child Classes
+                List<TypeDeclaration> childrenClasses = MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName());
+                IntUniform indexClass = new IntUniform(childrenClasses.size());
+                int break_point = childrenClasses.size();//Number of Classes
+                do {
+                    feasible = true;
+                    //5. RandomlySelectedClass
+                    sysType_src = childrenClasses.get(indexClass.generate());
 
-                    //Creating the OBSERVRefParam for the fld field
+                    //6. Creating the OBSERVRefParam for the fld field
                     value_fld = new ArrayList<String>();
                     if (!MetaphorCode.getFieldsFromClass(sysType_src).isEmpty()) {
-
-                        IntUniform numFldObs = new IntUniform(MetaphorCode.getFieldsFromClass(sysType_src).size());
+                        //6. Pick up a field
+                        numFldObs = new IntUniform(MetaphorCode.getFieldsFromClass(sysType_src).size());
                         value_fld.add((String) MetaphorCode.getFieldsFromClass(sysType_src).toArray()
                                 [numFldObs.generate()]);
 
-                        //Choosing other src(s) with the fld
-                        for (TypeDeclaration clase : clases) {
+                        //7. Identifying other src(s) with the fld
+                        for (TypeDeclaration clase : childrenClasses) {
                             for (String field : MetaphorCode.getFieldsFromClass(clase)) {
                                 if (field.equals(value_fld.get(0))) {
                                     value_src.add(clase.getQualifiedName());
@@ -160,23 +159,22 @@ public class GeneratingRefactorPUF extends GeneratingRefactor {
                         feasible = false;
                     }
 
-                } else {
-                    feasible = false;
-                    break;
-                }
+                    counterPUF++;
+                    if (counterPUF > break_point) {
+                        feasible = false;
+                        break;
+                    }
+
+                } while (!feasible);
+
             } else {
                 feasible = false;
-                break;
             }
+        } else {
+            feasible = false;
+        }
 
-            counter++;
-
-            if (counter < break_point)
-                break;
-
-        } while (!feasible);
-
-        if (!feasible || counter < break_point) {
+        if ( !feasible ) {
             //Penalty
             ref.getPenalty().add(penaltyReGeneration);
             refRepair = generatingRefactor(ref.getPenalty());

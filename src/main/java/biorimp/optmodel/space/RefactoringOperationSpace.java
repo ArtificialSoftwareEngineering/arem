@@ -92,7 +92,6 @@ public class RefactoringOperationSpace extends Space<List<RefactoringOperation>>
         String mapRefactor;
         GeneratingRefactor specificRefactor;
         boolean feasible = false;
-        int break_point = 10;
 
         List<RefactoringOperation> clon;
         List<RefactoringOperation> repaired = new ArrayList<RefactoringOperation>();
@@ -108,7 +107,7 @@ public class RefactoringOperationSpace extends Space<List<RefactoringOperation>>
             } else {
                 clon = (List<RefactoringOperation>) Clone.create(x);
                 if (x.size() < n) {
-                    clon.addAll(getRefactoring(n - x.size()));
+                    clon.addAll(getFixedRefactoring(n - x.size()));
                 }
             }
         } else {
@@ -202,7 +201,11 @@ public class RefactoringOperationSpace extends Space<List<RefactoringOperation>>
                     default:
                         specificRefactor = new GeneratingRefactorEC();
                 }//END CASE
-                refactorings.add(specificRefactor.repairRefactor(refOp, break_point));
+                //refactorings.add(specificRefactor.repairRefactor(refOp, break_point));
+                OBSERVRefactoring candidateRef = specificRefactor.repairRefactor(refOp);
+                if (candidateRef != null){
+                    refactorings.add(candidateRef);
+                }
             } else {
                 //If it is feasible then the refactoring operation remains the same.
                 refOp.setNonRepair(true);//Starts from the beginning No Penalty
@@ -231,13 +234,13 @@ public class RefactoringOperationSpace extends Space<List<RefactoringOperation>>
     }
 
 
-    public List<RefactoringOperation> getRefactoring(int k) {
+    private List<RefactoringOperation> getFixedRefactoring(int k) {
 
         int mapRefactor;
         OBSERVRefactorings oper = new OBSERVRefactorings();
         List<OBSERVRefactoring> refactorings = new ArrayList<OBSERVRefactoring>();
 
-        final int DECREASE = 5;
+        final int DECREASE = 5; //Excluding Inheritance during the repairing
         IntUniform g = new IntUniform(Refactoring.values().length - DECREASE);
         GeneratingRefactor randomRefactor = null;
 
@@ -358,9 +361,10 @@ public class RefactoringOperationSpace extends Space<List<RefactoringOperation>>
                     randomRefactor = new GeneratingRefactorIM();
             }//END CASE
 
-            //System.out.println( "Refactor [ " + Refactoring.values()[mapRefactor] + "]");
-            refactorings.add(randomRefactor.generatingRefactor(new ArrayList<Double>()));
-
+            OBSERVRefactoring candidateRef = randomRefactor.generatingRefactor(new ArrayList<Double>());
+            if (candidateRef != null){
+                refactorings.add(candidateRef);
+            }
         }
 
         oper.setRefactorings(refactorings);

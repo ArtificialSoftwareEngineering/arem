@@ -16,8 +16,7 @@ public abstract class GeneratingRefactor {
 
     public abstract OBSERVRefactoring generatingRefactor(ArrayList<Double> penalty);
 
-    public abstract OBSERVRefactoring repairRefactor(RefactoringOperation ref,
-                                                     int break_point);
+    public abstract OBSERVRefactoring repairRefactor(RefactoringOperation ref);
 
     public OBSERVRefactoring getRefactor() {
         return refactor;

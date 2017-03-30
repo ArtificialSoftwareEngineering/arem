@@ -6,6 +6,7 @@ package biorimp.optmodel.space.generation;
 import biorimp.optmodel.mappings.metaphor.MetaphorCode;
 import biorimp.optmodel.space.Refactoring;
 import biorimp.optmodel.space.feasibility.InspectRefactor;
+import biorimp.optmodel.space.reapairing.RepairingRefactor;
 import edu.wayne.cs.severe.redress2.entity.TypeDeclaration;
 import edu.wayne.cs.severe.redress2.entity.refactoring.CodeObjState;
 import edu.wayne.cs.severe.redress2.entity.refactoring.RefactoringOperation;
@@ -43,13 +44,13 @@ public class GeneratingRefactorMM extends GeneratingRefactor {
                 feasible = true;
                 params = new ArrayList<OBSERVRefParam>();
 
-                //Creating the OBSERVRefParam for the src class
+                //2. Creating the OBSERVRefParam for the src class
                 sysType_src = MetaphorCode.getMapClass().get(g.generate());
                 value_src = new ArrayList<String>();
                 value_src.add(sysType_src.getQualifiedName());
 
 
-                //Creating the OBSERVRefParam for the mtd class
+                //3. Creating the OBSERVRefParam for the mtd class
                 value_mtd = new ArrayList<String>();
                 if (!MetaphorCode.getMethodsFromClass(sysType_src).isEmpty()) {
                     IntUniform numMtdObs = new IntUniform(MetaphorCode.getMethodsFromClass(sysType_src).size());
@@ -57,7 +58,7 @@ public class GeneratingRefactorMM extends GeneratingRefactor {
                     value_mtd.add((String) MetaphorCode.getMethodsFromClass(sysType_src).toArray()
                             [numMtdObs.generate()]);
 
-                    //+Verification of method not constructor
+                    //4. Verification of method not constructor
                     feasible = InspectRefactor.inspectMethodNotConstructor(value_mtd, sysType_src);
 
                 } else {
@@ -65,15 +66,14 @@ public class GeneratingRefactorMM extends GeneratingRefactor {
                 }
             } while (!feasible);
 
-            //Creating the OBSERVRefParam for the tgt
+            //5. Creating the OBSERVRefParam for the tgt
             value_tgt = new ArrayList<String>();
             TypeDeclaration sysType_tgt = MetaphorCode.getMapClass().get(g.generate());
             value_tgt.add(sysType_tgt.getQualifiedName());
 
 
-            //Override and hierarchy verification parents
+            //6. Override and Hierarchy verification parents
             feasible = InspectRefactor.inspectHierarchyOverrideParents(value_mtd, sysType_src, sysType_tgt);
-
             if (feasible) {
                 //Override and hierarchy verification children
                 feasible = InspectRefactor.inspectHierarchyOverrideChildren(value_mtd, sysType_src, sysType_tgt);
@@ -90,131 +90,55 @@ public class GeneratingRefactorMM extends GeneratingRefactor {
     }
 
     @Override
-    public OBSERVRefactoring repairRefactor(RefactoringOperation ref, int break_point) {
+    public OBSERVRefactoring repairRefactor(RefactoringOperation ref) {
         // TODO Auto-generated method stub
-        OBSERVRefactoring refRepair = null;
-        int counter = 0;
-        boolean feasible;
+        OBSERVRefactoring refRepair;
+
         List<OBSERVRefParam> params;
-        IntUniform g = new IntUniform(MetaphorCode.getMapClass().size());
-        TypeDeclaration sysType_src;
+        TypeDeclaration sysType_src = RepairingRefactor.extractSRCforRepairing(ref);
         List<String> value_mtd;
         List<String> value_src;
         List<String> value_tgt = null;
 
+        boolean feasible = true;
+        params = new ArrayList<OBSERVRefParam>();
 
-        do {
-            do {
-                feasible = true;
-                params = new ArrayList<OBSERVRefParam>();
-
-                //Creating the OBSERVRefParam for the src class
-                //sysType_src =  code.getMapClass().get( g.generate() );
-                if (ref.getParams() != null) {
-                    //New class verification in src class
-                    if (ref.getParams().get("src").get(0).getObjState().equals(CodeObjState.NEW))
-                        sysType_src = MetaphorCode.getMapClass().get(g.generate());
-                    else
-                        sysType_src = (TypeDeclaration) ref.getParams().get("src").get(0).getCodeObj(); //Assumes the first src class of a set of classes
-                } else {
-                    sysType_src = MetaphorCode.getMapClass().get(g.generate());
-                }
-
-                value_src = new ArrayList<String>();
-                value_src.add(sysType_src.getQualifiedName());
+        //1. Creating the OBSERVRefParam for the src class
+        value_src = new ArrayList<String>();
+        value_src.add(sysType_src.getQualifiedName());
 
 
-                //Creating the OBSERVRefParam for the mtd class
-                value_mtd = new ArrayList<String>();
-                if (!MetaphorCode.getMethodsFromClass(sysType_src).isEmpty()) {
-                    IntUniform numMtdObs = new IntUniform(MetaphorCode.getMethodsFromClass(sysType_src).size());
+        //2. Creating the OBSERVRefParam for the mtd class
+        value_mtd = new ArrayList<String>();
+        if (!MetaphorCode.getMethodsFromClass(sysType_src).isEmpty()) {
+            IntUniform numMtdObs = new IntUniform(MetaphorCode.getMethodsFromClass(sysType_src).size());
 
-                    value_mtd.add((String) MetaphorCode.getMethodsFromClass(sysType_src).toArray()
-                            [numMtdObs.generate()]);
+            value_mtd.add((String) MetaphorCode.getMethodsFromClass(sysType_src).toArray()
+                    [numMtdObs.generate()]);
 
-                    //verification of method not constructor
-                    if (value_mtd.get(0).equals(sysType_src.getName()))
-                        feasible = false;
+            //3. Verification of method not constructor
+            if (value_mtd.get(0).equals(sysType_src.getName()))
+                feasible = false;
 
-                } else {
-                    feasible = false;
-                    //break;
-                }
+        } else {
+            feasible = false;
+        }
 
-                counter++;
+        if (feasible) {
+            //4. Creating the OBSERVRefParam for the tgt
+            value_tgt = new ArrayList<String>();
+            TypeDeclaration sysType_tgt = RepairingRefactor.extractTGTforRepairing(ref);
+            value_tgt.add(sysType_tgt.getQualifiedName());
 
-                if (counter < break_point)
-                    break;
-
-            } while (!feasible);
-
-            if (counter < break_point) {
-                break;
-            } else {
-
-                //Creating the OBSERVRefParam for the tgt
-                value_tgt = new ArrayList<String>();
-                //TypeDeclaration sysType_tgt = code.getMapClass().get( g.generate() );
-                //TypeDeclaration sysType_tgt = (TypeDeclaration) ref.getParams().get("tgt").get(0).getCodeObj();
-                TypeDeclaration sysType_tgt = null;
-                if (ref.getParams() != null) {
-                    if (ref.getParams().get("tgt") != null) {
-                        if (!ref.getParams().get("tgt").isEmpty())
-                            //New class verification in tgt class
-                            if (ref.getParams().get("tgt").get(0).getObjState().equals(CodeObjState.NEW))
-                                sysType_tgt = MetaphorCode.getMapClass().get(g.generate());
-                            else
-                                sysType_tgt = (TypeDeclaration) ref.getParams().get("tgt").get(0).getCodeObj(); //Assumes the first tgt class of a set of classes
-                        else
-                            sysType_tgt = MetaphorCode.getMapClass().get(g.generate());
-                    } else {
-                        sysType_tgt = MetaphorCode.getMapClass().get(g.generate());
-                    }
-                } else {
-                    sysType_tgt = MetaphorCode.getMapClass().get(g.generate());
-                }
-                value_tgt.add(sysType_tgt.getQualifiedName());
-
-
-                //Override and hierarchy verification parents
-                if (MetaphorCode.getBuilder().getParentClasses().get(sysType_src.getQualifiedName()) != null)
-                    if (!MetaphorCode.getBuilder().getParentClasses().get(sysType_src.getQualifiedName()).isEmpty()) {
-                        for (TypeDeclaration clase : MetaphorCode.getBuilder().getParentClasses().get(sysType_src.getQualifiedName())) {
-                            if (MetaphorCode.getMethodsFromClass(clase) != null)
-                                if (!MetaphorCode.getMethodsFromClass(clase).isEmpty()) {
-                                    for (String method : MetaphorCode.getMethodsFromClass(clase)) {
-                                        if (method.equals(value_mtd.get(0)) || clase.equals(sysType_tgt)) {
-                                            feasible = false;
-                                            break;
-                                        }
-                                    }
-                                }
-                        }
-                    }
-
-                if (feasible) {
-                    //Override and hierarchy verification children
-                    if (MetaphorCode.getBuilder().getChildClasses().get(sysType_src.getQualifiedName()) != null)
-                        if (!MetaphorCode.getBuilder().getChildClasses().get(sysType_src.getQualifiedName()).isEmpty()) {
-                            for (TypeDeclaration clase : MetaphorCode.getBuilder().getChildClasses().get(sysType_src.getQualifiedName())) {
-                                if (MetaphorCode.getMethodsFromClass(clase) != null)
-                                    if (!MetaphorCode.getMethodsFromClass(clase).isEmpty()) {
-                                        for (String method : MetaphorCode.getMethodsFromClass(clase)) {
-                                            if (method.equals(value_mtd.get(0)) || clase.equals(sysType_tgt)) {
-                                                feasible = false;
-                                                break;
-                                            }
-                                        }
-                                    }
-                            }
-                        }
-                }
+            //5. Override and Hierarchy verification parents
+            feasible = InspectRefactor.inspectHierarchyOverrideParents(value_mtd, sysType_src, sysType_tgt);
+            if (feasible) {
+                //Override and hierarchy verification children
+                feasible = InspectRefactor.inspectHierarchyOverrideChildren(value_mtd, sysType_src, sysType_tgt);
             }
+        }
 
-
-        } while (!feasible);
-
-        if (!feasible || counter < break_point) {
+        if (!feasible) {
             //Penalty
             ref.getPenalty().add(penaltyReGeneration);
             refRepair = generatingRefactor(ref.getPenalty());
@@ -227,7 +151,6 @@ public class GeneratingRefactorMM extends GeneratingRefactor {
             refRepair = new OBSERVRefactoring(type.name(), params, feasible, ref.getPenalty());
 
         }
-
 
         return refRepair;
     }

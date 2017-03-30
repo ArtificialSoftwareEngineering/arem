@@ -44,7 +44,7 @@ public class MainHAEAFIX {
         //String userPath = System.getProperty("user.dir")+"/BIO-RIMP";
         String userPath = System.getProperty("user.dir");
         //String[] args = { "-l", "Java", "-p", userPath+"\\test_data\\code\\acra\\src","-s", "     acra      " };
-        String[] args = {"-l", "Java", "-p", userPath + "/test_data/code/" + systems + "/src", "-s", "     " + systems + "      "};
+        String[] args = {"-l", "Java", "-p", userPath + "/resources/systems/" + systems + "/src", "-s", "     " + systems + "      "};
 
         //MainMetrics.main(args);
 
@@ -124,14 +124,7 @@ public class MainHAEAFIX {
         String systems = "acra";
         for (int i = 0; i < 30; i++) {
             refactorHAEA(i, systems);
-            MainHAEAvar.refactorVAR(i, systems);
-            MainHillClimbing.refactorHill(i, systems);
-            MainSimulatedAnnealing.refactorSimulated(i, systems);
         }
-        // Uncomment if testing real valued functions
-        // binary(); // Uncomment if testing binary valued functions
-        //binary2real(); // Uncomment if you want to try the multi-level search method
-
     }
 
     public static void escribirTextoArchivo(String texto) {

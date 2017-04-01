@@ -37,7 +37,7 @@ public class GeneratingRefactorPUM extends GeneratingRefactor {
         List<OBSERVRefParam> params;
 
         int counterPUM = 0;
-        int break_point = MetaphorCode.getMapClass().size();//Number of Classes
+        int break_point = MetaphorCode.getClassesWithInheritanceAndMethods().size();//Number of Classes
 
         IntUniform g = new IntUniform(break_point);
         List<String> value_mtd = null;
@@ -52,7 +52,7 @@ public class GeneratingRefactorPUM extends GeneratingRefactor {
 
             //1. Creating the OBSERVRefParam for the tgt
             value_tgt = new ArrayList<String>();
-            sysType_tgt = MetaphorCode.getMapClass().get(g.generate());
+            sysType_tgt = MetaphorCode.getClassesWithInheritanceAndMethods().get(g.generate());//<--
             value_tgt.add(sysType_tgt.getQualifiedName());
 
             //Creating the OBSERVRefParam for the src class

@@ -33,18 +33,19 @@ public class GeneratingRefactorPDF extends GeneratingRefactor {
         // TODO Auto-generated method stub
         boolean feasible;
         List<OBSERVRefParam> params;
-        IntUniform g = new IntUniform(MetaphorCode.getClassesWithFields().size());
+        int counterPDF = 0; //<-- 1.
+        int break_point = MetaphorCode.getClassesWithInheritanceAndFields().size();//Number of Classes
+
+        IntUniform g = new IntUniform(break_point);
         TypeDeclaration sysType_src;
 
-        int counterPDF = 0; //<-- 1.
-        int break_point = MetaphorCode.getMapClass().size();//Number of Classes
 
         do {
             feasible = true;
             params = new ArrayList<OBSERVRefParam>();
 
             //2. Creating the OBSERVRefParam for the src class
-            sysType_src = MetaphorCode.getClassesWithFields().get(g.generate());
+            sysType_src = MetaphorCode.getClassesWithInheritanceAndFields().get(g.generate());
             List<String> value_src = new ArrayList<String>();
             value_src.add(sysType_src.getQualifiedName());
             params.add(new OBSERVRefParam("src", value_src));

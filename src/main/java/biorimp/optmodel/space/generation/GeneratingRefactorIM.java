@@ -33,7 +33,7 @@ public class GeneratingRefactorIM extends GeneratingRefactor {
         // TODO Auto-generated method stub
         boolean feasible;
         List<OBSERVRefParam> params;
-        IntUniform g = new IntUniform(MetaphorCode.getMapClass().size());
+        IntUniform g = new IntUniform(MetaphorCode.getClassesWithMethods().size());
         TypeDeclaration sysType_src;
 
         do {
@@ -41,7 +41,7 @@ public class GeneratingRefactorIM extends GeneratingRefactor {
             params = new ArrayList<OBSERVRefParam>();
 
             //2. Creating the OBSERVRefParam for the src class
-            sysType_src = MetaphorCode.getMapClass().get(g.generate());
+            sysType_src = MetaphorCode.getClassesWithMethods().get(g.generate());
             List<String> value_src = new ArrayList<String>();
             value_src.add(sysType_src.getQualifiedName());
             params.add(new OBSERVRefParam("src", value_src));

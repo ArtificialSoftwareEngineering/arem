@@ -32,49 +32,37 @@ public class GeneratingRefactorRID extends GeneratingRefactor {
         // TODO Auto-generated method stub
         boolean feasible;
         List<OBSERVRefParam> params;
-        IntUniform g = new IntUniform(MetaphorCode.getMapClass().size());
+        IntUniform g = new IntUniform(MetaphorCode.getClassesWithInheritance().size());
 
         int counterRID = 0; //<-- 1.
-        int break_point = MetaphorCode.getMapClass().size();//Number of Classes
+        int break_point = MetaphorCode.getClassesWithInheritance().size();//Number of Classes
 
         do {
             feasible = true;
             params = new ArrayList<OBSERVRefParam>();
 
             //2. Creating the OBSERVRefParam for the src class
-            TypeDeclaration sysType_src = MetaphorCode.getMapClass().get(g.generate());
             List<String> value_src = new ArrayList<String>();
-            value_src.add(sysType_src.getQualifiedName());
-            params.add(new OBSERVRefParam("src", value_src));
 
             //Creating the OBSERVRefParam for the tgt
             List<String> value_tgt = new ArrayList<String>();
-            TypeDeclaration sysType_tgt = MetaphorCode.getMapClass().get(g.generate());
+            TypeDeclaration sysType_tgt = MetaphorCode.getClassesWithInheritance().get(g.generate());
             value_tgt.add(sysType_tgt.getQualifiedName());
             params.add(new OBSERVRefParam("tgt", value_tgt));
 
-            //3. Verification of equality
-            if (sysType_src.equals(sysType_tgt))
-                feasible = false;
-
-            if (feasible) {
-                //4. Verification of SRCSubClassTGT
-                if (MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName()) != null) {
-                    if (!MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName()).isEmpty()) {
-                        List<TypeDeclaration> childClasses = MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName());
-                        feasible = false;
-                        for (TypeDeclaration clase : childClasses) {
-                            if (clase.equals(sysType_src)) {
-                                feasible = true;
-                                break;
-                            }
-                        }
-                    } else {
-                        feasible = false;
+            //4. Verification of SRCSubClassTGT
+            if (MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName()) != null) {
+                if (!MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName()).isEmpty()) {
+                    List<TypeDeclaration> childClasses = MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName());
+                    for (TypeDeclaration clase : childClasses) {
+                        value_src.add(clase.getQualifiedName());
                     }
+                    params.add(new OBSERVRefParam("src", value_src));
                 } else {
                     feasible = false;
                 }
+            } else {
+                feasible = false;
             }
 
             counterRID++;

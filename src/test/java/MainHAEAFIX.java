@@ -44,8 +44,8 @@ public class MainHAEAFIX {
         //String userPath = System.getProperty("user.dir")+"/BIO-RIMP";
         String userPath = System.getProperty("user.dir");
         //String[] args = { "-l", "Java", "-p", userPath+"\\test_data\\code\\acra\\src","-s", "     acra      " };
-        String[] args = {"-l", "Java", "-p", userPath + "/resources/systems/" + systems + "/src", "-s", "     " + systems + "      "};
-
+        //String[] args = {"-l", "Java", "-p", userPath + "/resources/systems/" + systems + "/src", "-s", "     " + systems + "      "};
+        String[] args = { "-l", "Java", "-p", userPath+"/test_data/code/" + systems + "/src","-s", "     " + systems + "      " };
         //MainMetrics.main(args);
 
         //Second Step: Create the structures for the prediction
@@ -121,14 +121,14 @@ public class MainHAEAFIX {
 
 
     public static void main(String[] args) {
-        String systems = "acra";
+        String systems = "ccodec";
         for (int i = 0; i < 30; i++) {
             refactorHAEA(i, systems);
         }
     }
 
     public static void escribirTextoArchivo(String texto) {
-        String systems = "acra";
+        String systems = "ccodec";
         String ruta = systems + "_T_HAEAFIX_JAR.txt";
         try (FileWriter fw = new FileWriter(ruta, true);
              FileReader fr = new FileReader(ruta)) {

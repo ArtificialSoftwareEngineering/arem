@@ -31,23 +31,24 @@ public class GeneratingRefactorRDI extends GeneratingRefactor {
         // TODO Auto-generated method stub
         boolean feasible;
         List<OBSERVRefParam> params;
-        IntUniform g = new IntUniform(MetaphorCode.getMapClass().size());
+
 
         int counterRDI = 0; //<-- 1.
-        int break_point = MetaphorCode.getMapClass().size();//Number of Classes
+        int break_point = MetaphorCode.getClassesWithOutInheritance().size();//Number of Classes
+        IntUniform g = new IntUniform(break_point);
 
         do {
             feasible = true;
             params = new ArrayList<OBSERVRefParam>();
             //2. Creating the OBSERVRefParam for the src class
-            TypeDeclaration sysType_src = MetaphorCode.getMapClass().get(g.generate());
+            TypeDeclaration sysType_src = MetaphorCode.getClassesWithOutInheritance().get(g.generate());
             List<String> value_src = new ArrayList<String>();
             value_src.add(sysType_src.getQualifiedName());
             params.add(new OBSERVRefParam("src", value_src));
 
             //Creating the OBSERVRefParam for the tgt
             List<String> value_tgt = new ArrayList<String>();
-            TypeDeclaration sysType_tgt = MetaphorCode.getMapClass().get(g.generate());
+            TypeDeclaration sysType_tgt = MetaphorCode.getClassesWithOutInheritance().get(g.generate());
             value_tgt.add(sysType_tgt.getQualifiedName());
             params.add(new OBSERVRefParam("tgt", value_tgt));
 

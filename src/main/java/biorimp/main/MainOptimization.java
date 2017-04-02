@@ -40,9 +40,10 @@ import java.util.List;
 public class MainOptimization {
 
     private static String algo;
-    private static String systems = "xerces";
+    private static String systems = "jf-dataset-01";
     private static String userPath = System.getProperty("user.dir");
     private static String project_path = "/resources/systems/";
+    // -r = parse code
     private static String[] args = {"-l", "Java", "-p", userPath + project_path + systems + "/src", "-s", "     " + systems + "      "};
 
 

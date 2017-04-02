@@ -41,13 +41,15 @@ public class PredFormulasProcessorBIoRIPM {
     private ProgLang lang;
     private HierarchyBuilder builder;
     private ArrayList<CodeMetric> metrics;
+    private boolean processSystem = false;
 
     public PredFormulasProcessorBIoRIPM(File systemPath, String sysName,
-                                        ProgLang lang) throws ReadException, IOException, CompilUnitException, WritingException {
+                                        ProgLang lang, boolean processSystem) throws ReadException, IOException, CompilUnitException, WritingException {
 
         this.systemPath = systemPath;
         this.sysName = sysName;
         this.lang = lang;
+        this.processSystem = processSystem;
         processSytem();
         InitMetrics();
 
@@ -127,7 +129,7 @@ public class PredFormulasProcessorBIoRIPM {
         LOGGER.debug("Processing the system \"" + sysName + "\"");
 
         // parse the code and get the compilation units
-        CodeParser parser = new CodeParser(sysName, lang, false);
+        CodeParser parser = new CodeParser(sysName, lang, processSystem);
         List<CompilationUnit> compUnits = parser.parseCodeInFolder(systemPath);
 
         // parse the XML files of the code

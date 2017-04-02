@@ -140,7 +140,7 @@ public class CodeParser {
                 File xmlFile = getValidXmlFile(srcFile);
 
                 // srcML command
-                String command = "srcML/src2srcml.exe --language="
+                String command = "libs/redress/src2srcml.exe --language="
                         + getSrcMLLang() + " \"" + srcFile.getAbsolutePath()
                         + "\" -o \"" + xmlFile.getAbsolutePath() + "\"";
 

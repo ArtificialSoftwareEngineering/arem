@@ -21,7 +21,7 @@ import java.util.List;
 public class JavaCompilUnitParser extends CompilUnitParser {
 
     // constants
-    private static final String DOT = "";
+    private static final String DOT = ".";
     // logger
     private static Logger LOGGER = LoggerFactory
             .getLogger(JavaCompilUnitParser.class);

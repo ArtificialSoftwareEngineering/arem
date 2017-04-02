@@ -34,14 +34,15 @@ public class GeneratingRefactorPDM extends GeneratingRefactor {
         // TODO Auto-generated method stub
         boolean feasible;
         List<OBSERVRefParam> params;
-        IntUniform g = new IntUniform(MetaphorCode.getMapClass().size());
+        int counterPDM = 0; //<-- 1.
+        int break_point = MetaphorCode.getClassesWithInheritanceAndMethods().size();//Number of Classes
+
+        IntUniform g = new IntUniform(break_point);
         TypeDeclaration sysType_src;
         List<String> value_tgt;
         List<String> value_src;
         List<String> value_mtd;
 
-        int counterPDM = 0; //<-- 1.
-        int break_point = MetaphorCode.getMapClass().size();//Number of Classes
 
         do {
             //2.Generating a random src with its mtd
@@ -50,7 +51,7 @@ public class GeneratingRefactorPDM extends GeneratingRefactor {
                 params = new ArrayList<OBSERVRefParam>();
 
                 //Creating the OBSERVRefParam for the src class/super class
-                sysType_src = MetaphorCode.getMapClass().get(g.generate());
+                sysType_src = MetaphorCode.getClassesWithInheritanceAndMethods().get(g.generate());
                 value_src = new ArrayList<String>();
                 value_src.add(sysType_src.getQualifiedName());
 

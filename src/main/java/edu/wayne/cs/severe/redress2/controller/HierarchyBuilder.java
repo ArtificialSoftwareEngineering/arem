@@ -123,7 +123,7 @@ public class HierarchyBuilder {
 
             if (qNameClass == null) {
                 qNameClass = new TypeDeclaration("",
-                        (supClass.endsWith("") ? supClass.substring(0,
+                        (supClass.endsWith(".") ? supClass.substring(0,
                                 supClass.length() - 1) : supClass));
             }
 
@@ -176,7 +176,7 @@ public class HierarchyBuilder {
         // FigNode
         for (TypeDeclaration tDcl : allTypes) {
             String qName = tDcl.getQualifiedName();
-            if (("" + qName + ".").endsWith("" + supClass)) {
+            if (("." + qName + ".").endsWith("." + supClass)) {
                 return tDcl;
             }
         }
@@ -213,7 +213,7 @@ public class HierarchyBuilder {
         if (nodeValue != null && !nodeValue.trim().isEmpty()
                 && !"extends".equalsIgnoreCase(nameNode.getNodeName())
                 && !"implements".equalsIgnoreCase(nameNode.getNodeName())) {
-            nameType = nodeValue + "";
+            nameType = nodeValue + ".";
         } else if (nameNode.getChildNodes().getLength() > 1) {
 
             if ("implements".equalsIgnoreCase(nameNode.getNodeName())) {

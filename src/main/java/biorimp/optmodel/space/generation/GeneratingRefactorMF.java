@@ -35,14 +35,14 @@ public class GeneratingRefactorMF extends GeneratingRefactor {
         boolean feasible;
         List<OBSERVRefParam> params;
         TypeDeclaration sysType_src;
-        IntUniform g = new IntUniform(MetaphorCode.getMapClass().size());
+        IntUniform g = new IntUniform(MetaphorCode.getClassesWithFields().size());
 
         do {
             feasible = true;
             params = new ArrayList<OBSERVRefParam>();
 
             //Creating the OBSERVRefParam for the src class
-            sysType_src = MetaphorCode.getMapClass().get(g.generate());
+            sysType_src = MetaphorCode.getClassesWithFields().get(g.generate());
             List<String> value_src = new ArrayList<String>();
             value_src.add(sysType_src.getQualifiedName());
             params.add(new OBSERVRefParam("src", value_src));

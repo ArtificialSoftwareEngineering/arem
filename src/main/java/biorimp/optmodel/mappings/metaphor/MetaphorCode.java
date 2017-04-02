@@ -44,15 +44,20 @@ public final class MetaphorCode {
     private static HierarchyBuilder builder;
     private static List<TypeDeclaration> sysTypeDcls;
     private static List<TypeDeclaration> classesWithFields;
+    private static List<TypeDeclaration> classesWithMethods;
     private static List<TypeDeclaration> classesWithInheritance;
+    private static List<TypeDeclaration> classesWithOutInheritance;
     private static HashMap<Integer, TypeDeclaration> mapClass =
             new HashMap<Integer, TypeDeclaration>();
     private static HashMap<Integer, TypeDeclaration> mapNewClass =
             new HashMap<Integer, TypeDeclaration>();
     private static ProgLang lang;
+
     private static ArrayList<CodeMetric> metrics;
     private static File systemPath;
     private static String sysName;
+
+
 
     private static int COUNTER = 0;
     private static LinkedHashMap<String, LinkedHashMap<String, Double>> prevMetrics;
@@ -70,7 +75,9 @@ public final class MetaphorCode {
         previousMetricsCalculation();
 
         classesWithFields = setMapClassWithFields(sysTypeDcls);
+        classesWithMethods = setMapClassWithMethods(sysTypeDcls);
         classesWithInheritance = setMapClassWithInheritance(sysTypeDcls);
+        classesWithOutInheritance = setClassesWithOutInheritance(sysTypeDcls);
     }
 
     public static double getPenaltyReGeneration() {
@@ -145,20 +152,41 @@ public final class MetaphorCode {
         return mapClassFields;
     }
 
+    private static List<TypeDeclaration> setMapClassWithMethods(
+            List<TypeDeclaration> sysTypeDcls
+    ) {
+        List<TypeDeclaration> mapClassMethods = new ArrayList<>();
+        for (TypeDeclaration typeDcl : sysTypeDcls) {
+            if (!getMethodsFromClass(typeDcl).isEmpty())
+                mapClassMethods.add(typeDcl);
+        }
+
+        return mapClassMethods;
+    }
+
     private static List<TypeDeclaration> setMapClassWithInheritance(
             List<TypeDeclaration> sysTypeDcls
     ) {
         List<TypeDeclaration> mapClassInheritance = new ArrayList<>();
-        if (!getBuilder().getChildClasses().isEmpty()) {
+        if (!getBuilder().getChildClasses().isEmpty() || !getBuilder().getParentClasses().isEmpty()) {
             for (TypeDeclaration typeDcl1 : sysTypeDcls) {
-                //Check if it has children
-                String s = typeDcl1.getQualifiedName();
-                if (!MetaphorCode.getBuilder().getChildClasses().get(typeDcl1.getQualifiedName()).isEmpty()) {
+                //Check if it has children or parents
+                if (!MetaphorCode.getBuilder().getParentClasses().get(typeDcl1.getQualifiedName()).isEmpty() ||
+                        !MetaphorCode.getBuilder().getChildClasses().get(typeDcl1.getQualifiedName()).isEmpty()) {
                     for (TypeDeclaration childClass :
                             MetaphorCode.getBuilder().getChildClasses().get(typeDcl1.getQualifiedName())) {
                         if (sysTypeDcls.contains(childClass)) {
                             mapClassInheritance.add(typeDcl1);
                             break;
+                        }
+                    }
+                    if (!mapClassInheritance.contains(typeDcl1)) {
+                        for (TypeDeclaration parentClass :
+                                MetaphorCode.getBuilder().getParentClasses().get(typeDcl1.getQualifiedName())) {
+                            if (sysTypeDcls.contains(parentClass)) {
+                                mapClassInheritance.add(typeDcl1);
+                                break;
+                            }
                         }
                     }
                 }
@@ -172,12 +200,36 @@ public final class MetaphorCode {
         return classesWithFields;
     }
 
+    public static List<TypeDeclaration> getClassesWithMethods() {
+        return classesWithMethods;
+    }
+
     public static List<TypeDeclaration> getClassesWithInheritance() {
         return classesWithInheritance;
     }
 
+    public static List<TypeDeclaration> getClassesWithOutInheritance(){
+        return classesWithOutInheritance;
+    }
+
+    public static List<TypeDeclaration> setClassesWithOutInheritance(
+            List<TypeDeclaration> sysTypeDcls) {
+        List<TypeDeclaration> clonTypeDcls = new ArrayList<>(sysTypeDcls);
+        List<TypeDeclaration> clonWithInheritance = new ArrayList<>(
+                getClassesWithInheritance());
+        clonTypeDcls.removeAll(clonWithInheritance);
+        return clonTypeDcls;
+    }
+
     public static List<TypeDeclaration> getClassesWithInheritanceAndFields() {
         List<TypeDeclaration> clonFields = new ArrayList<>(getClassesWithFields());
+        List<TypeDeclaration> clonInheritance = new ArrayList<>(getClassesWithInheritance());
+        clonInheritance.retainAll(clonFields);
+        return clonInheritance;
+    }
+
+    public static List<TypeDeclaration> getClassesWithInheritanceAndMethods() {
+        List<TypeDeclaration> clonFields = new ArrayList<>(getClassesWithMethods());
         List<TypeDeclaration> clonInheritance = new ArrayList<>(getClassesWithInheritance());
         clonInheritance.retainAll(clonFields);
         return clonInheritance;

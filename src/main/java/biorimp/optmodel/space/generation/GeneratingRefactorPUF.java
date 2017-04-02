@@ -31,9 +31,9 @@ public class GeneratingRefactorPUF extends GeneratingRefactor {
         List<OBSERVRefParam> params;
 
         int counterPUF = 0; //<-- 1.
-        int break_point = MetaphorCode.getMapClass().size();//Number of Classes
+        int break_point = MetaphorCode.getClassesWithInheritanceAndFields().size();//Number of Classes
 
-        IntUniform g = new IntUniform(MetaphorCode.getMapClass().size());
+        IntUniform g = new IntUniform(break_point);
         IntUniform numFldObs;
         TypeDeclaration sysType_src;
         TypeDeclaration sysType_tgt;
@@ -47,7 +47,7 @@ public class GeneratingRefactorPUF extends GeneratingRefactor {
             params = new ArrayList<OBSERVRefParam>();
             //2. Creating the OBSERVRefParam for the tgt/super class
             value_tgt = new ArrayList<String>();
-            sysType_tgt = MetaphorCode.getMapClass().get(g.generate());
+            sysType_tgt = MetaphorCode.getClassesWithInheritanceAndFields().get(g.generate());//<--
             value_tgt.add(sysType_tgt.getQualifiedName());
 
             //Creating the OBSERVRefParam for the src class

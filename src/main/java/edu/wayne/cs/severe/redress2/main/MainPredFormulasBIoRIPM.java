@@ -45,7 +45,7 @@ public class MainPredFormulasBIoRIPM {
 
             // process the system (create the metrics and builder in the constructor)
             PredFormulasProcessorBIoRIPM processor = new PredFormulasProcessorBIoRIPM(
-                    parser.getSysPath(), parser.getSysName(), parser.getLang());
+                    parser.getSysPath(), parser.getSysName(), parser.getLang(), parser.getParseCode());
             //Getting the builder and the typesdcls
             builder = processor.getBuilder();
             sysTypeDcls = processor.getSysTypeDcls();

@@ -1,4 +1,5 @@
 import biorimp.optmodel.fitness.FitnessQualityDB;
+import biorimp.optmodel.fitness.FitnessQualityDBScala;
 import biorimp.optmodel.fitness.RefactorArrayPlainWrite;
 import biorimp.optmodel.mappings.metaphor.MetaphorCode;
 import biorimp.optmodel.operators.RefOperMutation;
@@ -34,17 +35,14 @@ public class MainSimulatedAnnealing {
 
         //First Step: Calculate Actual Metrics
         String userPath = System.getProperty("user.dir");
-        //String[] args = { "-l", "Java", "-p", userPath+"\\test_data\\code\\acra\\src","-s", "     acra      " };
         String[] args = {"-l", "Java", "-p", userPath + "/test_data/code/" + systems + "/src", "-s", "     " + systems + "      "};
+
         //Second Step: Create the structures for the prediction
         MainPredFormulasBIoRIPM init = new MainPredFormulasBIoRIPM();
         init.main(args);
         MetaphorCode metaphor = new MetaphorCode(init);
 
-        //processor.processSytem();
-
         //Third Step: Optimization
-
         // Search Space definition
         int DIM = 7;
         Space<List<RefactoringOperation>> space = new RefactoringOperationSpace(DIM);
@@ -53,14 +51,12 @@ public class MainSimulatedAnnealing {
         RefOperMutation variation = new RefOperMutation(0.5);
 
         // Optimization Function
-        OptimizationFunction<List<RefactoringOperation>> function = new FitnessQualityDB(systems + "_SIMULATED_" + iter);
+        OptimizationFunction<List<RefactoringOperation>> function = new FitnessQualityDBScala(systems + "_SIMULATED_" + iter);
         Goal<List<RefactoringOperation>> goal = new OptimizationGoal<List<RefactoringOperation>>(function); // maximizing, remove the parameter false if minimizing   	
-
 
         // Search method
         int MAXITERS = 2000;
         SimulatedAnnealing<List<RefactoringOperation>> search = new SimulatedAnnealing<List<RefactoringOperation>>(variation, MAXITERS);
-
 
         // Tracking the goal evaluations
         SolutionDescriptors<List<RefactoringOperation>> desc = new SolutionDescriptors<List<RefactoringOperation>>();
@@ -101,7 +97,6 @@ public class MainSimulatedAnnealing {
              FileReader fr = new FileReader(ruta)) {
             //Escribimos en el fichero un String y un caracter 97 (a)
             fw.write(texto);
-            //fw.write(97);
             //Guardamos los cambios del fichero
             fw.flush();
         } catch (IOException e) {

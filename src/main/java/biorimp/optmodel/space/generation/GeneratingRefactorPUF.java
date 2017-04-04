@@ -28,10 +28,9 @@ public class GeneratingRefactorPUF extends GeneratingRefactor {
     public OBSERVRefactoring generatingRefactor(ArrayList<Double> penalty) {
 
         boolean feasible;
-        List<OBSERVRefParam> params;
-
         int counterPUF = 0; //<-- 1.
         int break_point = MetaphorCode.getClassesWithInheritanceAndFields().size();//Number of Classes
+        OBSERVRefactoring refRepair = null;
 
         IntUniform g = new IntUniform(break_point);
         IntUniform numFldObs;
@@ -44,7 +43,7 @@ public class GeneratingRefactorPUF extends GeneratingRefactor {
 
         do {
             feasible = true;
-            params = new ArrayList<OBSERVRefParam>();
+
             //2. Creating the OBSERVRefParam for the tgt/super class
             value_tgt = new ArrayList<String>();
             sysType_tgt = MetaphorCode.getClassesWithInheritanceAndFields().get(g.generate());//<--
@@ -92,11 +91,16 @@ public class GeneratingRefactorPUF extends GeneratingRefactor {
             }
         } while (!feasible);
 
-        params.add(new OBSERVRefParam("src", value_src));
-        params.add(new OBSERVRefParam("fld", value_fld));
-        params.add(new OBSERVRefParam("tgt", value_tgt));
+        if (feasible) {
+            List<OBSERVRefParam> params;
+            params = new ArrayList<OBSERVRefParam>();
+            params.add(new OBSERVRefParam("src", value_src));
+            params.add(new OBSERVRefParam("fld", value_fld));
+            params.add(new OBSERVRefParam("tgt", value_tgt));
+            refRepair = new OBSERVRefactoring(type.name(), params, feasible, penalty);
+        }
 
-        return new OBSERVRefactoring(type.name(), params, feasible, penalty);
+        return refRepair;
     }
 
     @Override
@@ -174,7 +178,7 @@ public class GeneratingRefactorPUF extends GeneratingRefactor {
             feasible = false;
         }
 
-        if ( !feasible ) {
+        if (!feasible) {
             //Penalty
             ref.getPenalty().add(penaltyReGeneration);
             refRepair = generatingRefactor(ref.getPenalty());
@@ -186,7 +190,6 @@ public class GeneratingRefactorPUF extends GeneratingRefactor {
             params.add(new OBSERVRefParam("tgt", value_tgt));
             refRepair = new OBSERVRefactoring(type.name(), params, feasible, ref.getPenalty());
         }
-
 
         return refRepair;
     }

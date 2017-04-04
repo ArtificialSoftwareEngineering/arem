@@ -44,8 +44,8 @@ public class MainHAEAFIX {
         //String userPath = System.getProperty("user.dir")+"/BIO-RIMP";
         String userPath = System.getProperty("user.dir");
         //String[] args = { "-l", "Java", "-p", userPath+"\\test_data\\code\\acra\\src","-s", "     acra      " };
-        //String[] args = {"-l", "Java", "-p", userPath + "/resources/systems/" + systems + "/src", "-s", "     " + systems + "      "};
-        String[] args = { "-l", "Java", "-p", userPath+"/test_data/code/" + systems + "/src","-s", "     " + systems + "      " };
+        String[] args = {"-l", "Java", "-p", userPath + "/resources/systems/" + systems + "/src", "-s", "     " + systems + "      "};
+        //String[] args = { "-l", "Java", "-p", userPath+"/test_data/code/" + systems + "/src","-s", "     " + systems + "      " };
         //MainMetrics.main(args);
 
         //Second Step: Create the structures for the prediction
@@ -58,7 +58,7 @@ public class MainHAEAFIX {
 
         //Third Step: Optimization
         // Search Space definition
-        int DIM = 7;
+        int DIM = 1;
         Space<List<RefactoringOperation>> space = new RefactoringOperationSpace(DIM);
 
         // Optimization Function

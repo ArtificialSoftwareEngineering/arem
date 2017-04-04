@@ -32,38 +32,41 @@ public class GeneratingRefactorPDF extends GeneratingRefactor {
     public OBSERVRefactoring generatingRefactor(ArrayList<Double> penalty) {
         // TODO Auto-generated method stub
         boolean feasible;
-        List<OBSERVRefParam> params;
+
         int counterPDF = 0; //<-- 1.
         int break_point = MetaphorCode.getClassesWithInheritanceAndFields().size();//Number of Classes
 
         IntUniform g = new IntUniform(break_point);
         TypeDeclaration sysType_src;
-
+        List<String> value_src;
+        List<String> value_fld;
+        List<String> value_tgt = null;
+        OBSERVRefactoring refRepair = null;
 
         do {
             feasible = true;
-            params = new ArrayList<OBSERVRefParam>();
+
 
             //2. Creating the OBSERVRefParam for the src class
             sysType_src = MetaphorCode.getClassesWithInheritanceAndFields().get(g.generate());
-            List<String> value_src = new ArrayList<String>();
+            value_src = new ArrayList<String>();
             value_src.add(sysType_src.getQualifiedName());
-            params.add(new OBSERVRefParam("src", value_src));
+
 
             //3. Creating the OBSERVRefParam for the fld field
-            List<String> value_fld = new ArrayList<String>();
+            value_fld = new ArrayList<String>();
             if (!MetaphorCode.getFieldsFromClass(sysType_src).isEmpty()) {
                 IntUniform numFldObs = new IntUniform(MetaphorCode.getFieldsFromClass(sysType_src).size());
                 value_fld.add((String) MetaphorCode.getFieldsFromClass(sysType_src).toArray()
                         [numFldObs.generate()]);
-                params.add(new OBSERVRefParam("fld", value_fld));
+
             } else {
                 feasible = false;
             }
 
             if (feasible) {
                 //Creating the OBSERVRefParam for the tgt class
-                List<String> value_tgt = new ArrayList<String>();
+                value_tgt = new ArrayList<String>();
 
                 //Verification of SRCSupClassTGT
                 //4.Retrieving all child classes and choosing randomly
@@ -78,7 +81,6 @@ public class GeneratingRefactorPDF extends GeneratingRefactor {
                         }
                     } while (value_tgt.isEmpty());
 
-                    params.add(new OBSERVRefParam("tgt", value_tgt));
                 } else {
                     feasible = false;
                 }
@@ -91,8 +93,16 @@ public class GeneratingRefactorPDF extends GeneratingRefactor {
             }
         } while (!feasible);
 
+        if (feasible) {
+            List<OBSERVRefParam> params;
+            params = new ArrayList<OBSERVRefParam>();
+            params.add(new OBSERVRefParam("src", value_src));
+            params.add(new OBSERVRefParam("fld", value_fld));
+            params.add(new OBSERVRefParam("tgt", value_tgt));
+            refRepair = new OBSERVRefactoring(type.name(), params, feasible, penalty);
+        }
 
-        return new OBSERVRefactoring(type.name(), params, feasible, penalty);
+        return refRepair;
     }
 
     @Override

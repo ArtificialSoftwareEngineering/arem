@@ -22,12 +22,24 @@ public class CreateRefOper {
 
     public static List<RefactoringOperation> get(int n) {
 
+
+        List<RefactoringOperation> setRefactoring;
+
+        if ( MetaphorCode.getClassesWithInheritance().isEmpty() ) {
+            setRefactoring = getFixedRefactoring(n);
+        } else {
+            setRefactoring = getRefactoringWithInheritance(n);
+        }
+
+        return setRefactoring;
+    }
+
+    static public List<RefactoringOperation> getRefactoringWithInheritance(int n) {
         int mapRefactor;
         OBSERVRefactorings oper = new OBSERVRefactorings();
         List<OBSERVRefactoring> refactorings = new ArrayList<OBSERVRefactoring>();
 
-        final int DECREASE = MetaphorCode.getDECREASE();
-        IntUniform g = new IntUniform(Refactoring.values().length - DECREASE);
+        IntUniform g = new IntUniform(Refactoring.values().length);
         GeneratingRefactor randomRefactor = null;
 
         for (int i = 0; i < n; i++) {
@@ -69,16 +81,59 @@ public class CreateRefOper {
                 case 11:
                     randomRefactor = new GeneratingRefactorPUM();
                     break;
-                //TODO: Quitar defaul y descomentar lineas del switch para activar todas
-                default:
-                    randomRefactor = new GeneratingRefactorIM();
             }//END CASE
 
             OBSERVRefactoring candidateRef = randomRefactor.generatingRefactor(new ArrayList<Double>());
-            if (candidateRef != null){
+            if (candidateRef != null) {
                 refactorings.add(candidateRef);
             }
+        }
+        oper.setRefactorings(refactorings);
+        try {
+            return MetaphorCode.getRefactorReader().getRefactOperations(oper);
+        } catch (ReadException e) {
+            e.printStackTrace();
+            System.out.println("Reading Error :3");
+            return null;
+        }
+    }
 
+    static public  List<RefactoringOperation> getFixedRefactoring(int k) {
+
+        int mapRefactor;
+        OBSERVRefactorings oper = new OBSERVRefactorings();
+        List<OBSERVRefactoring> refactorings = new ArrayList<OBSERVRefactoring>();
+
+        final int DECREASE = 5; //Excluding Inheritance during the repairing
+        IntUniform g = new IntUniform(Refactoring.values().length - DECREASE);
+        GeneratingRefactor randomRefactor = null;
+
+        for (int i = 0; i < k; i++) {
+            mapRefactor = g.generate();
+            switch (mapRefactor) {
+                case 0:
+                    randomRefactor = new GeneratingRefactorEC();
+                    break;
+                case 1:
+                    randomRefactor = new GeneratingRefactorMM();
+                    break;
+                case 2:
+                    randomRefactor = new GeneratingRefactorRMMO();
+                    break;
+                case 3:
+                    randomRefactor = new GeneratingRefactorRDI();
+                    break;
+                case 4:
+                    randomRefactor = new GeneratingRefactorMF();
+                    break;
+                case 5:
+                    randomRefactor = new GeneratingRefactorEM();
+                    break;
+                case 6:
+                    randomRefactor = new GeneratingRefactorIM();
+                    break;
+            }//END CASE
+            refactorings.add(randomRefactor.generatingRefactor(new ArrayList<Double>()));
         }
 
         oper.setRefactorings(refactorings);

@@ -34,7 +34,6 @@ public class GeneratingRefactorPUM extends GeneratingRefactor {
         // TODO Auto-generated method stub
         boolean feasible;
 
-        List<OBSERVRefParam> params;
 
         int counterPUM = 0;
         int break_point = MetaphorCode.getClassesWithInheritanceAndMethods().size();//Number of Classes
@@ -45,10 +44,10 @@ public class GeneratingRefactorPUM extends GeneratingRefactor {
         TypeDeclaration sysType_tgt;
         TypeDeclaration sysType_src;
         List<String> value_src;
+        OBSERVRefactoring refRepair = null;
 
         do {
             feasible = true;
-            params = new ArrayList<OBSERVRefParam>();
 
             //1. Creating the OBSERVRefParam for the tgt
             value_tgt = new ArrayList<String>();
@@ -111,13 +110,17 @@ public class GeneratingRefactorPUM extends GeneratingRefactor {
 
         } while (!feasible);
 
-
-        params.add(new OBSERVRefParam("src", value_src));
-        params.add(new OBSERVRefParam("mtd", value_mtd));
-        params.add(new OBSERVRefParam("tgt", value_tgt));
+        if (feasible) {
+            List<OBSERVRefParam> params;
+            params = new ArrayList<OBSERVRefParam>();
+            params.add(new OBSERVRefParam("src", value_src));
+            params.add(new OBSERVRefParam("mtd", value_mtd));
+            params.add(new OBSERVRefParam("tgt", value_tgt));
+            refRepair = new OBSERVRefactoring(type.name(), params, feasible, penalty);
+        }
 
         //When returning without src, mtd or tgt, means that is not a feasible refactoring.
-        return new OBSERVRefactoring(type.name(), params, feasible, penalty);
+        return refRepair;
     }
 
     @Override
@@ -204,7 +207,7 @@ public class GeneratingRefactorPUM extends GeneratingRefactor {
             feasible = false;
         }
 
-        if ( !feasible ) {
+        if (!feasible) {
             //Penalty
             ref.getPenalty().add(penaltyReGeneration);
             refRepair = generatingRefactor(ref.getPenalty());

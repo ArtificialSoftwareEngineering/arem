@@ -33,9 +33,10 @@ public class GeneratingRefactorPDM extends GeneratingRefactor {
     public OBSERVRefactoring generatingRefactor(ArrayList<Double> penalty) {
         // TODO Auto-generated method stub
         boolean feasible;
-        List<OBSERVRefParam> params;
+
         int counterPDM = 0; //<-- 1.
         int break_point = MetaphorCode.getClassesWithInheritanceAndMethods().size();//Number of Classes
+        OBSERVRefactoring refRepair = null;
 
         IntUniform g = new IntUniform(break_point);
         TypeDeclaration sysType_src;
@@ -48,7 +49,6 @@ public class GeneratingRefactorPDM extends GeneratingRefactor {
             //2.Generating a random src with its mtd
             do {
                 feasible = true;
-                params = new ArrayList<OBSERVRefParam>();
 
                 //Creating the OBSERVRefParam for the src class/super class
                 sysType_src = MetaphorCode.getClassesWithInheritanceAndMethods().get(g.generate());
@@ -117,10 +117,16 @@ public class GeneratingRefactorPDM extends GeneratingRefactor {
             }
         } while (!feasible);//Checking Subclasses for SRC selected
 
-        params.add(new OBSERVRefParam("src", value_src));
-        params.add(new OBSERVRefParam("mtd", value_mtd));
-        params.add(new OBSERVRefParam("tgt", value_tgt));
-        return new OBSERVRefactoring(type.name(), params, feasible, penalty);
+        if(feasible) {
+            List<OBSERVRefParam> params;
+            params = new ArrayList<OBSERVRefParam>();
+            params.add(new OBSERVRefParam("src", value_src));
+            params.add(new OBSERVRefParam("mtd", value_mtd));
+            params.add(new OBSERVRefParam("tgt", value_tgt));
+            refRepair = new OBSERVRefactoring(type.name(), params, feasible, penalty);
+        }
+
+        return refRepair;
     }
 
     @Override

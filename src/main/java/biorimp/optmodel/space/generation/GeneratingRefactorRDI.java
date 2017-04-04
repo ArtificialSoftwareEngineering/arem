@@ -30,27 +30,25 @@ public class GeneratingRefactorRDI extends GeneratingRefactor {
     public OBSERVRefactoring generatingRefactor(ArrayList<Double> penalty) {
         // TODO Auto-generated method stub
         boolean feasible;
-        List<OBSERVRefParam> params;
-
-
         int counterRDI = 0; //<-- 1.
         int break_point = MetaphorCode.getClassesWithOutInheritance().size();//Number of Classes
         IntUniform g = new IntUniform(break_point);
-
+        OBSERVRefactoring refRepair = null;
+        List<String> value_src;
+        List<String> value_tgt;
         do {
             feasible = true;
-            params = new ArrayList<OBSERVRefParam>();
             //2. Creating the OBSERVRefParam for the src class
             TypeDeclaration sysType_src = MetaphorCode.getClassesWithOutInheritance().get(g.generate());
-            List<String> value_src = new ArrayList<String>();
+            value_src = new ArrayList<String>();
             value_src.add(sysType_src.getQualifiedName());
-            params.add(new OBSERVRefParam("src", value_src));
+
 
             //Creating the OBSERVRefParam for the tgt
-            List<String> value_tgt = new ArrayList<String>();
+            value_tgt = new ArrayList<String>();
             TypeDeclaration sysType_tgt = MetaphorCode.getClassesWithOutInheritance().get(g.generate());
             value_tgt.add(sysType_tgt.getQualifiedName());
-            params.add(new OBSERVRefParam("tgt", value_tgt));
+
 
             //3. Verification of equality
             if (sysType_src.equals(sysType_tgt))
@@ -92,7 +90,16 @@ public class GeneratingRefactorRDI extends GeneratingRefactor {
             }
 
         } while (!feasible);
-        return new OBSERVRefactoring(type.name(), params, feasible, penalty);
+
+        if (feasible){
+            List<OBSERVRefParam> params;
+            params = new ArrayList<OBSERVRefParam>();
+            params.add(new OBSERVRefParam("src", value_src));
+            params.add(new OBSERVRefParam("tgt", value_tgt));
+            refRepair = new OBSERVRefactoring(type.name(), params, feasible, penalty);
+        }
+
+        return refRepair;
     }
 
     @Override

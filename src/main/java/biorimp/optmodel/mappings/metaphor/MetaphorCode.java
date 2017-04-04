@@ -215,24 +215,20 @@ public final class MetaphorCode {
     public static List<TypeDeclaration> setClassesWithOutInheritance(
             List<TypeDeclaration> sysTypeDcls) {
         List<TypeDeclaration> clonTypeDcls = new ArrayList<>(sysTypeDcls);
-        List<TypeDeclaration> clonWithInheritance = new ArrayList<>(
-                getClassesWithInheritance());
-        clonTypeDcls.removeAll(clonWithInheritance);
+        clonTypeDcls.removeAll(getClassesWithInheritance());
         return clonTypeDcls;
     }
 
     public static List<TypeDeclaration> getClassesWithInheritanceAndFields() {
         List<TypeDeclaration> clonFields = new ArrayList<>(getClassesWithFields());
-        List<TypeDeclaration> clonInheritance = new ArrayList<>(getClassesWithInheritance());
-        clonInheritance.retainAll(clonFields);
-        return clonInheritance;
+        clonFields.retainAll(getClassesWithInheritance());
+        return clonFields;
     }
 
     public static List<TypeDeclaration> getClassesWithInheritanceAndMethods() {
-        List<TypeDeclaration> clonFields = new ArrayList<>(getClassesWithMethods());
-        List<TypeDeclaration> clonInheritance = new ArrayList<>(getClassesWithInheritance());
-        clonInheritance.retainAll(clonFields);
-        return clonInheritance;
+        List<TypeDeclaration> clonMethods = new ArrayList<>(getClassesWithMethods());
+        clonMethods.retainAll(getClassesWithInheritance());
+        return clonMethods;
     }
 
     public static List<TypeDeclaration> getSysTypeDcls() {

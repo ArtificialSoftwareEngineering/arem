@@ -35,6 +35,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * @author dnader
  */
+@Deprecated
 public class FitnessQualityDB extends OptimizationFunction<List<RefactoringOperation>> {
 
     //MetaphorCode metaphor;

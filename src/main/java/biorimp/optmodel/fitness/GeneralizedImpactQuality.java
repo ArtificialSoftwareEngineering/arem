@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 /**
  * @author dnader
  */
+@Deprecated
 public class GeneralizedImpactQuality extends OptimizationFunction<List<RefactoringOperation>> {
 
     MetaphorCode metaphor;

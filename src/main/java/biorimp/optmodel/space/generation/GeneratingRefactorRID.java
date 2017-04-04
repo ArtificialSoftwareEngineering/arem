@@ -48,18 +48,18 @@ public class GeneratingRefactorRID extends GeneratingRefactor {
 
             //Creating the OBSERVRefParam for the tgt
             value_tgt = new ArrayList<String>();
-            TypeDeclaration sysType_tgt = MetaphorCode.getClassesWithInheritance().get(g.generate());
-            value_tgt.add(sysType_tgt.getQualifiedName());
+            TypeDeclaration sysType_src = MetaphorCode.getClassesWithInheritance().get(g.generate());
+            value_src.add(sysType_src.getQualifiedName());
 
 
             //4. Verification of SRCSubClassTGT
-            if (MetaphorCode.getBuilder().getParentClasses().get(sysType_tgt.getQualifiedName()) != null) {
-                if (!MetaphorCode.getBuilder().getParentClasses().get(sysType_tgt.getQualifiedName()).isEmpty()) {
+            if (MetaphorCode.getBuilder().getChildClasses().get(sysType_src.getQualifiedName()) != null) {
+                if (!MetaphorCode.getBuilder().getChildClasses().get(sysType_src.getQualifiedName()).isEmpty()) {
                     List<TypeDeclaration> childClasses =
-                            MetaphorCode.getBuilder().getParentClasses().get(sysType_tgt.getQualifiedName());
-                    for (TypeDeclaration clase : childClasses) {
-                        value_src.add(clase.getQualifiedName());
-                    }
+                            MetaphorCode.getBuilder().getChildClasses().get(sysType_src.getQualifiedName());
+                    IntUniform indexClass = new IntUniform(childClasses.size());
+
+                    value_tgt.add(childClasses.get(indexClass.generate()).getQualifiedName());
 
                 } else {
                     feasible = false;
@@ -76,8 +76,7 @@ public class GeneratingRefactorRID extends GeneratingRefactor {
         } while (!feasible);
 
         if(feasible){
-            List<OBSERVRefParam> params;
-            params = new ArrayList<OBSERVRefParam>();
+            List<OBSERVRefParam> params = new ArrayList<OBSERVRefParam>();
             params.add(new OBSERVRefParam("tgt", value_tgt));
             params.add(new OBSERVRefParam("src", value_src));
             refRepair = new OBSERVRefactoring(type.name(), params, feasible, penalty);
@@ -112,13 +111,13 @@ public class GeneratingRefactorRID extends GeneratingRefactor {
 
         if (feasible) {
             //4. Verification of SRCSubClassTGT
-            if (MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName()) != null) {
-                if (!MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName()).isEmpty()) {
+            if (MetaphorCode.getBuilder().getChildClasses().get(sysType_src.getQualifiedName()) != null) {
+                if (!MetaphorCode.getBuilder().getChildClasses().get(sysType_src.getQualifiedName()).isEmpty()) {
                     List<TypeDeclaration> childrenClasses =
-                            MetaphorCode.getBuilder().getChildClasses().get(sysType_tgt.getQualifiedName());
+                            MetaphorCode.getBuilder().getChildClasses().get(sysType_src.getQualifiedName());
                     feasible = false;
                     for (TypeDeclaration clase : childrenClasses) {
-                        if (clase.equals(sysType_src)) {
+                        if (clase.equals(sysType_tgt)) {
                             feasible = true;
                             break;
                         }

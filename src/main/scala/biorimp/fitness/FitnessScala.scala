@@ -155,9 +155,9 @@ trait FitnessCache extends FitnessCacheUtils {
     res
   }
 
+  //The memoization is dropped, althoug could be activated memoize(summaryDuration)
   protected[fitness] def recordarOperacionRefactor(operRef: RefactoringOperation): Future[RefMetric] =
-    memoize(summaryDuration) {
-
+     {
       val acronym = RefAcronym.withName(operRef.getRefType.getAcronym)
       lazy val rMetrics = (if (operRef.getParams != null) {
         //1. If is params defined
@@ -367,10 +367,10 @@ trait FitnessBias extends FitnessCache {
         (numerator flatMap (x => denominator collect {
           case y if y != 0.0 => x / y
           case y => 1.0
-        })).getOrElse(1.0) + penalty
+        })).getOrElse(1.0) + penalty //<---
 
       if (ratio.isNaN)
-        1.0 + penalty
+        1.0 + penalty //<----
       else
         ratio
     }

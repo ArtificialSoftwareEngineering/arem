@@ -1,4 +1,5 @@
 import biorimp.optmodel.fitness.FitnessQualityDB;
+import biorimp.optmodel.fitness.FitnessQualityDBScala;
 import biorimp.optmodel.fitness.RefactorArrayPlainWrite;
 import biorimp.optmodel.mappings.metaphor.MetaphorCode;
 import biorimp.optmodel.operators.RefOperMutation;
@@ -45,12 +46,7 @@ public class MainHillClimbing {
 
         // First Step: Calculate Actual Metrics
         String userPath = System.getProperty("user.dir");
-        // String[] args = { "-l", "Java", "-p",
-        // userPath+"\\test_data\\code\\evolutionaryagent\\src","-s", "
-        // evolutionaryagent " };
         String[] args = {"-l", "Java", "-p", userPath + "/test_data/code/" + systems + "/src", "-s", "     " + systems + "      "};
-
-        // MainMetrics.main(args);
 
         // Second Step: Create the structures for the prediction
         MainPredFormulasBIoRIPM init = new MainPredFormulasBIoRIPM();
@@ -65,7 +61,7 @@ public class MainHillClimbing {
         // Optimization Function
         // OptimizationFunction<List<RefactoringOperation>> function = new
         // GeneralizedImpactQuality(metaphor,"HILLCLIMBING");
-        OptimizationFunction<List<RefactoringOperation>> function = new FitnessQualityDB(systems + "_HILLCLIMBING_" + iter);
+        OptimizationFunction<List<RefactoringOperation>> function = new FitnessQualityDBScala(systems + "_HILLCLIMBING_" + iter);
         Goal<List<RefactoringOperation>> goal = new OptimizationGoal<List<RefactoringOperation>>(function); // maximizing,
         // remove
         // the

@@ -1,4 +1,5 @@
 import biorimp.optmodel.fitness.FitnessQualityDB;
+import biorimp.optmodel.fitness.FitnessQualityDBScala;
 import biorimp.optmodel.fitness.RefactorArrayPlainWrite;
 import biorimp.optmodel.mappings.metaphor.MetaphorCode;
 import biorimp.optmodel.operators.RefOperAddGen;
@@ -38,33 +39,24 @@ public class MainHAEAvar {
 
         //First Step: Calculate Actual Metrics
         String userPath = System.getProperty("user.dir");
-        //String[] args = { "-l", "Java", "-p", userPath + "/test_data/code/ccodec/src", "-s", "     ccodec      " };
         String[] args = {"-l", "Java", "-p", userPath + "/test_data/code/" + systems + "/src", "-s", "     " + systems + "      "};
-        //MainMetrics.main(args);
 
         //Second Step: Create the structures for the prediction
         MainPredFormulasBIoRIPM init = new MainPredFormulasBIoRIPM();
         init.main(args);
         MetaphorCode metaphor = new MetaphorCode(init);
 
-
-        //processor.processSytem();
-
         //Third Step: Optimization
         // Search Space definition
-        VarLengthOperRefSpace space = new VarLengthOperRefSpace(5, 9);
+        VarLengthOperRefSpace space = new VarLengthOperRefSpace(2, 7);
 
         // Optimization Function
-        OptimizationFunction<List<RefactoringOperation>> function = new FitnessQualityDB(systems + "_HAEAVAR_" + iter);
+        OptimizationFunction<List<RefactoringOperation>> function = new FitnessQualityDBScala(systems + "_HAEAVAR_" + iter);
         Goal<List<RefactoringOperation>> goal = new OptimizationGoal<List<RefactoringOperation>>(function); // maximizing, remove the parameter false if minimizing
 
         // Variation definition
-        //DoubleGenerator random = new SimplestSymmetricPowerLawGenerator(); // It can be set to Gaussian or other symmetric number generator (centered in zero)
-        //PickComponents pick = new PermutationPick(DIM/2); // It can be set to null if the mutation operator is applied to every component of the solution array
-        //AdaptMutationIntensity adapt = new OneFifthRule(500, 0.9); // It can be set to null if no mutation adaptation is required
-        //IntensityMutation mutation = new IntensityMutation( 0.1, random, pick, adapt );
-        RefOperAddGen add = new RefOperAddGen(1, 5, 9);
-        RefOperDelGen del = new RefOperDelGen(1, 5, 9);
+        RefOperAddGen add = new RefOperAddGen(1, 2, 7);
+        RefOperDelGen del = new RefOperDelGen(1, 2, 7);
         ArityTwo<List<RefactoringOperation>> xover = new RefOperJoin();
 
         // Search method
@@ -109,9 +101,6 @@ public class MainHAEAvar {
         for (int i = 0; i < 30; i++) {
             refactorVAR(i, systems);
         }
-        // binary(); // Uncomment if testing binary valued functions
-        //binary2real(); // Uncomment if you want to try the multi-level search method
-
     }
 
     public static void escribirTextoArchivo(String texto) {
@@ -122,7 +111,6 @@ public class MainHAEAvar {
              FileReader fr = new FileReader(ruta)) {
             //Escribimos en el fichero un String y un caracter 97 (a)
             fw.write(texto);
-            //fw.write(97);
             //Guardamos los cambios del fichero
             fw.flush();
         } catch (IOException e) {

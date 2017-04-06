@@ -60,7 +60,7 @@ public class MainHAEAvar {
         ArityTwo<List<RefactoringOperation>> xover = new RefOperJoin();
 
         // Search method
-        int POPSIZE = 20;
+        int POPSIZE = 50;
         int MAXITERS = 100;
         @SuppressWarnings("unchecked")
         Operator<List<RefactoringOperation>>[] opers = (Operator<List<RefactoringOperation>>[]) new Operator[3];

@@ -97,6 +97,7 @@ public class RefactoringOperationSpace extends Space<List<RefactoringOperation>>
 
         //Repairing Space
         if (x != null) {
+            //x.removeAll(null);
             if (x.size() > n) {
                 clon = new ArrayList<RefactoringOperation>();
                 for (int i = 0; i < n; i++) {

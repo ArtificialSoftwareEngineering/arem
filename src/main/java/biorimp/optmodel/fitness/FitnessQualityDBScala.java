@@ -25,7 +25,22 @@ public class FitnessQualityDBScala extends OptimizationFunction<List<Refactoring
     @Override
     public Double apply(List<RefactoringOperation> x) {
         FitnessScalaApply fit = new FitnessScalaApply();
-        double generalQuality = fit.gBiasQualitySystemRatio(x);
+        double generalQuality;
+        if( x.contains(null) ){
+            x.removeAll(null);
+            if( x.isEmpty() ){
+                generalQuality = 1;
+            } else{
+                generalQuality = fit.gBiasQualitySystemRatio(x);
+            }
+        }else{
+            if( x.isEmpty() ){
+                generalQuality = 1;
+            } else{
+                generalQuality = fit.gBiasQualitySystemRatio(x);
+            }
+        }
+
         escribirTextoArchivo(String.valueOf(generalQuality) + "\r\n");
         return generalQuality;
     }

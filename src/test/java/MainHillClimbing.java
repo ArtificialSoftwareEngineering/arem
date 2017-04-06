@@ -31,9 +31,10 @@ import java.util.List;
  */
 
 public class MainHillClimbing {
+    private static String SYS = "jfreechart";
 
     public static void main(String[] argss) {
-        String systems = "acra";
+        String systems = SYS;
         for (int i = 0; i < 30; i++) {
             refactorHill(i, systems);
         }
@@ -55,7 +56,7 @@ public class MainHillClimbing {
 
         // Third Step: Optimization
         // Search Space definition
-        int DIM = 7;
+        int DIM = 5;
         Space<List<RefactoringOperation>> space = new RefactoringOperationSpace(DIM);
 
         // Optimization Function
@@ -74,7 +75,7 @@ public class MainHillClimbing {
         RefOperMutation variation = new RefOperMutation(0.5);
 
         // Search method in RefactorSpace
-        int MAXITERS = 2000;
+        int MAXITERS = 5000;
         boolean neutral = true; // Accepts movements when having same function
         // value
         HillClimbing<List<RefactoringOperation>> search = new HillClimbing<List<RefactoringOperation>>(variation,
@@ -106,7 +107,7 @@ public class MainHillClimbing {
     }
 
     public static void escribirTextoArchivo(String texto) {
-        String systems = "acra";
+        String systems = SYS;
         String ruta = systems + "_T_HILL.txt";
         try (FileWriter fw = new FileWriter(ruta, true);
              FileReader fr = new FileReader(ruta)) {

@@ -307,6 +307,7 @@ trait FitnessBias extends FitnessCache {
   protected[fitness] def biasQualitySystemRatio(refOperations: Set[RefactoringOperation]): Double = {
 
     //Average Penalty
+    /*
     val penalty = (refOperations collect {
       case refOper if !refOper.isNonRepair =>
         val individualPenalty = if (refOper.getPenalty.toList.nonEmpty) {
@@ -321,7 +322,8 @@ trait FitnessBias extends FitnessCache {
         0.0
     }
       ).reduceLeft(_ + _) / refOperations.size
-
+*/
+    val penalty = 0.0;
     val generalQuality = predictMetrics(refOperations) map { refF =>
 
       val metricActualVector = getSUA(refF)
@@ -351,6 +353,8 @@ trait FitnessBias extends FitnessCache {
         if (x > y) x else y
       })
 
+      //val mean =
+
       //Vector weights for metrics
       val w = 1.0 / suaMetric.size
 
@@ -363,6 +367,18 @@ trait FitnessBias extends FitnessCache {
         w * ((met._2 - minPrev) / (maxPrev - minPrev))
       }
       }).toList.reduceLeftOption(_ + _)
+
+      //Standardization
+      val numeratorStan = (suaMetric map { met => {
+        w * ((met._2 - min) / (max - min))
+      }
+      }).toList.reduceLeftOption(_ + _)
+
+      val denominatorStan = (suaPrevMetric map { met => {
+        w * ((met._2 - minPrev) / (maxPrev - minPrev))
+      }
+      }).toList.reduceLeftOption(_ + _)
+
       val ratio =
         (numerator flatMap (x => denominator collect {
           case y if y != 0.0 => x / y
@@ -443,7 +459,7 @@ trait FitnessBias extends FitnessCache {
 
   private def getSUA(refactoringsListMap: List[RefMetric]): ClassMap = {
     //Organized the prediction and reduce the data according to maximum value for metrics
-    //SUA is composed of classes (witout refactorings)
+    //SUA is composed of classes (without refactorings)
 
     def simplifyingRefactoring(refactoringsListMap: List[RefMetric], result: RefMetric): RefMetric = {
       refactoringsListMap match {
@@ -461,10 +477,10 @@ trait FitnessBias extends FitnessCache {
       }
     }
 
-    val sua2 = refactoringsListMap reduce (_ ++ _)
+    val sua2 = simplifyingRefactoring(refactoringsListMap, Map.empty).values.toSet.flatten.toMap
 
-    val sua = simplifyingRefactoring(refactoringsListMap, Map.empty).values.toSet.flatten.toMap
-
+    val sua = simplifyingClass(simplifyingRefactoring(refactoringsListMap, Map.empty).values.toList,
+      Map.empty)
     sua
   }
 

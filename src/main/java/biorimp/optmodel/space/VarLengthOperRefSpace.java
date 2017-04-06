@@ -113,8 +113,8 @@ public class VarLengthOperRefSpace extends Space<List<RefactoringOperation>> {
         } else {
             if (x.size() < minLength) {
                 //x = new BitArray(minLength, true);
-                clon = createRefOper(minLength);
-                for (int i = x.size(); i < minLength; i++) {
+                clon = createRefOper(minLength-x.size() );
+                for (int i = 0; i < clon.size(); i++) {
                     x.add(clon.get(i));
                 }
             }

@@ -36,6 +36,8 @@ import java.util.List;
 
 public class MainHAEAFIX {
 
+    private static String SYS = "jfreechart";
+
     //@Test
     public static void refactorHAEA(int iter, String systems) {
         //Tracking computational time
@@ -52,7 +54,7 @@ public class MainHAEAFIX {
 
         //Third Step: Optimization
         // Search Space definition
-        int DIM = 7;
+        int DIM = 5;
         Space<List<RefactoringOperation>> space = new RefactoringOperationSpace(DIM);
 
         // Optimization Function
@@ -65,8 +67,8 @@ public class MainHAEAFIX {
         ArityOne<List<RefactoringOperation>> transposition = new RefOperClassTransposition();
 
         // Search method
-        int POPSIZE = 20;
-        int MAXITERS = 80;
+        int POPSIZE = 40;
+        int MAXITERS = 100;
 
         @SuppressWarnings("unchecked")
         Operator<List<RefactoringOperation>>[] opers = (Operator<List<RefactoringOperation>>[]) new Operator[3];
@@ -106,14 +108,14 @@ public class MainHAEAFIX {
 
 
     public static void main(String[] args) {
-        String systems = "ccodec";
+        String systems = SYS;
         for (int i = 0; i < 30; i++) {
             refactorHAEA(i, systems);
         }
     }
 
     public static void escribirTextoArchivo(String texto) {
-        String systems = "ccodec";
+        String systems = SYS;
         String ruta = systems + "_T_HAEAFIX_JAR.txt";
         try (FileWriter fw = new FileWriter(ruta, true);
              FileReader fr = new FileReader(ruta)) {

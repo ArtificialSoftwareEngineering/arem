@@ -45,7 +45,7 @@ public class MainHAEAFIX {
 
         //First Step: Calculate Actual Metrics
         String userPath = System.getProperty("user.dir");
-        String[] args = {"-l", "Java", "-p", userPath + "/resources/systems/" + systems + "/src", "-s", "     " + systems + "      "};
+        String[] args = {"-l", "Java", "-p", userPath + "/resources/systems/" + systems + "/src","-r" ,"-s", "     " + systems + "      "};
 
         //Second Step: Create the structures for the prediction
         MainPredFormulasBIoRIPM init = new MainPredFormulasBIoRIPM();

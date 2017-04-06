@@ -31,7 +31,7 @@ import java.util.List;
  */
 
 public class MainHillClimbing {
-    private static String SYS = "jfreechart";
+    private static String SYS = "JF_DATASET-32";
 
     public static void main(String[] argss) {
         String systems = SYS;
@@ -48,7 +48,7 @@ public class MainHillClimbing {
         // First Step: Calculate Actual Metrics
         String userPath = System.getProperty("user.dir");
         //String[] args = {"-l", "Java", "-p", userPath + "/test_data/code/" + systems + "/src", "-s", "     " + systems + "      "};
-        String[] args = {"-l", "Java", "-p", userPath + "\\resources\\systems\\" + systems + "\\src", "-s", "     " + systems + "      "};
+        String[] args = {"-l", "Java", "-p", userPath + "\\resources\\systems\\" + systems + "\\src","-r", "-s", "     " + systems + "      "};
 
         // Second Step: Create the structures for the prediction
         MainPredFormulasBIoRIPM init = new MainPredFormulasBIoRIPM();

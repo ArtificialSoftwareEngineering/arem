@@ -88,15 +88,34 @@ public class RefOperMutation extends ArityOne<List<RefactoringOperation>> {
 
     @Override
     public List<RefactoringOperation> apply(List<RefactoringOperation> x) {
+        List<RefactoringOperation> genome = (List<RefactoringOperation>) Clone.create(x);
+
+        if (MetaphorCode.getClassesWithInheritance().isEmpty()) {
+            if (MetaphorCode.getClassesWithFields().isEmpty()) {
+                genome = getRefactoringWithOutInheritanceNoFields(genome);
+            } else {
+                genome = getRefactoringWithOutInheritance(genome);
+            }
+
+        } else {
+            if (MetaphorCode.getClassesWithInheritanceAndFields().isEmpty()) {
+                genome = getRefactoringWithInheritanceNoFields(genome);
+            } else {
+                genome = getRefactoringWithInheritance(genome);
+            }
+        }
+
+        return genome;
+    }
+
+    private List<RefactoringOperation> getRefactoringWithInheritance(List<RefactoringOperation> genome) {
         try {
-            List<RefactoringOperation> genome = (List<RefactoringOperation>) Clone.create(x);
             double rate = 1.0 - ((bit_mutation_rate == 0.0) ? 1.0 / genome.size() : bit_mutation_rate);
+
             RandBool g = new RandBool(rate);
             RefactoringOperation refOper;
 
-            final int DECREASE = MetaphorCode.getDECREASE();
-
-            IntUniform r = new IntUniform(Refactoring.values().length - DECREASE);
+            IntUniform r = new IntUniform(Refactoring.values().length);
             RefactoringType refType = null;
 
             for (int i = 0; i < genome.size(); i++) {
@@ -146,12 +165,159 @@ public class RefOperMutation extends ArityOne<List<RefactoringOperation>> {
                     genome.set(i, refOper);
                 }
             }
-            return genome;
+
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("[Mutation]" + e.getMessage());
         }
-        return null;
+        return genome;
+    }
+
+    private List<RefactoringOperation> getRefactoringWithInheritanceNoFields(List<RefactoringOperation> genome) {
+        try {
+            double rate = 1.0 - ((bit_mutation_rate == 0.0) ? 1.0 / genome.size() : bit_mutation_rate);
+
+            RandBool g = new RandBool(rate);
+            RefactoringOperation refOper;
+
+            IntUniform r = new IntUniform(Refactoring.values().length - 4);
+            RefactoringType refType = null;
+
+            for (int i = 0; i < genome.size(); i++) {
+                if (g.next()) {
+                    switch (r.generate()) {
+                        case 0:
+                            refType = new MoveMethod(MetaphorCode.getSysTypeDcls(), MetaphorCode.getBuilder());
+                            break;
+                        case 1:
+                            refType = new ReplaceMethodObject(MetaphorCode.getSysTypeDcls(), MetaphorCode.getLang(), MetaphorCode.getBuilder());
+                            break;
+                        case 2:
+                            refType = new ReplaceDelegationInheritance(MetaphorCode.getSysTypeDcls(), MetaphorCode.getBuilder());
+                            break;
+                        case 3:
+                            refType = new ExtractMethod(MetaphorCode.getSysTypeDcls(), MetaphorCode.getLang());
+                            break;
+                        case 4:
+                            refType = new InlineMethod(MetaphorCode.getSysTypeDcls(), MetaphorCode.getLang());
+                            break;
+                        case 5:
+                            refType = new ReplaceInheritanceDelegation(MetaphorCode.getSysTypeDcls(), MetaphorCode.getBuilder());
+                            break;
+                        case 6:
+                            refType = new PushDownMethod(MetaphorCode.getSysTypeDcls(), MetaphorCode.getBuilder());
+                            break;
+                        case 7:
+                            refType = new PullUpMethod(MetaphorCode.getSysTypeDcls(), MetaphorCode.getLang(), MetaphorCode.getBuilder());
+                            break;
+                    }//END CASE
+
+                    refOper = new RefactoringOperation(refType, genome.get(i).getParams(),
+                            refType.getAcronym(), genome.get(i).getSubRefs(), genome.get(i).isFeasible(),
+                            genome.get(i).getPenalty());
+                    genome.set(i, refOper);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("[Mutation]" + e.getMessage());
+        }
+        return genome;
+    }
+
+    private List<RefactoringOperation> getRefactoringWithOutInheritance(List<RefactoringOperation> genome) {
+        try {
+            double rate = 1.0 - ((bit_mutation_rate == 0.0) ? 1.0 / genome.size() : bit_mutation_rate);
+
+            RandBool g = new RandBool(rate);
+            RefactoringOperation refOper;
+
+            IntUniform r = new IntUniform(Refactoring.values().length - 5);
+            RefactoringType refType = null;
+
+            for (int i = 0; i < genome.size(); i++) {
+                if (g.next()) {
+                    switch (r.generate()) {
+                        case 0:
+                            refType = new ExtractClass(MetaphorCode.getSysTypeDcls(), MetaphorCode.getLang(), MetaphorCode.getBuilder());
+                            break;
+                        case 1:
+                            refType = new MoveMethod(MetaphorCode.getSysTypeDcls(), MetaphorCode.getBuilder());
+                            break;
+                        case 2:
+                            refType = new ReplaceMethodObject(MetaphorCode.getSysTypeDcls(), MetaphorCode.getLang(), MetaphorCode.getBuilder());
+                            break;
+                        case 3:
+                            refType = new ReplaceDelegationInheritance(MetaphorCode.getSysTypeDcls(), MetaphorCode.getBuilder());
+                            break;
+                        case 4:
+                            refType = new MoveField(MetaphorCode.getSysTypeDcls(), MetaphorCode.getLang());
+                            break;
+                        case 5:
+                            refType = new ExtractMethod(MetaphorCode.getSysTypeDcls(), MetaphorCode.getLang());
+                            break;
+                        case 6:
+                            refType = new InlineMethod(MetaphorCode.getSysTypeDcls(), MetaphorCode.getLang());
+                            break;
+                    }//END CASE
+
+                    refOper = new RefactoringOperation(refType, genome.get(i).getParams(),
+                            refType.getAcronym(), genome.get(i).getSubRefs(), genome.get(i).isFeasible(),
+                            genome.get(i).getPenalty());
+                    genome.set(i, refOper);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("[Mutation]" + e.getMessage());
+        }
+        return genome;
+    }
+
+    private List<RefactoringOperation> getRefactoringWithOutInheritanceNoFields(List<RefactoringOperation> genome) {
+        try {
+            double rate = 1.0 - ((bit_mutation_rate == 0.0) ? 1.0 / genome.size() : bit_mutation_rate);
+
+            RandBool g = new RandBool(rate);
+            RefactoringOperation refOper;
+
+            IntUniform r = new IntUniform(Refactoring.values().length - 7);
+            RefactoringType refType = null;
+
+            for (int i = 0; i < genome.size(); i++) {
+                if (g.next()) {
+                    switch (r.generate()) {
+                        case 0:
+                            refType = new MoveMethod(MetaphorCode.getSysTypeDcls(), MetaphorCode.getBuilder());
+                            break;
+                        case 1:
+                            refType = new ReplaceMethodObject(MetaphorCode.getSysTypeDcls(), MetaphorCode.getLang(), MetaphorCode.getBuilder());
+                            break;
+                        case 2:
+                            refType = new ReplaceDelegationInheritance(MetaphorCode.getSysTypeDcls(), MetaphorCode.getBuilder());
+                            break;
+                        case 3:
+                            refType = new ExtractMethod(MetaphorCode.getSysTypeDcls(), MetaphorCode.getLang());
+                            break;
+                        case 4:
+                            refType = new InlineMethod(MetaphorCode.getSysTypeDcls(), MetaphorCode.getLang());
+                            break;
+                    }//END CASE
+
+                    refOper = new RefactoringOperation(refType, genome.get(i).getParams(),
+                            refType.getAcronym(), genome.get(i).getSubRefs(), genome.get(i).isFeasible(),
+                            genome.get(i).getPenalty());
+                    genome.set(i, refOper);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("[Mutation]" + e.getMessage());
+        }
+        return genome;
     }
 
 }

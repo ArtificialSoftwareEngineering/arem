@@ -5,9 +5,8 @@ package biorimp.optmodel.space.generation;
 
 import biorimp.optmodel.mappings.metaphor.MetaphorCode;
 import biorimp.optmodel.space.Refactoring;
-import biorimp.optmodel.space.reapairing.RepairingRefactor;
+import biorimp.optmodel.space.repairing.RepairingRefactor;
 import edu.wayne.cs.severe.redress2.entity.TypeDeclaration;
-import edu.wayne.cs.severe.redress2.entity.refactoring.CodeObjState;
 import edu.wayne.cs.severe.redress2.entity.refactoring.RefactoringOperation;
 import edu.wayne.cs.severe.redress2.entity.refactoring.json.OBSERVRefParam;
 import edu.wayne.cs.severe.redress2.entity.refactoring.json.OBSERVRefactoring;

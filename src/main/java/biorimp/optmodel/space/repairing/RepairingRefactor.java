@@ -1,4 +1,4 @@
-package biorimp.optmodel.space.reapairing;
+package biorimp.optmodel.space.repairing;
 
 
 import biorimp.optmodel.mappings.metaphor.MetaphorCode;
@@ -6,8 +6,6 @@ import edu.wayne.cs.severe.redress2.entity.TypeDeclaration;
 import edu.wayne.cs.severe.redress2.entity.refactoring.CodeObjState;
 import edu.wayne.cs.severe.redress2.entity.refactoring.RefactoringOperation;
 import unalcol.random.integer.IntUniform;
-
-import java.util.List;
 
 /**
  * Created by david on 5/11/16.

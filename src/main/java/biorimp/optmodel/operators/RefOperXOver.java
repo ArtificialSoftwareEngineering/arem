@@ -82,9 +82,13 @@ public class RefOperXOver extends ArityTwo<List<RefactoringOperation>> {
 
         cross_over_point = xoverPoint;
 
-        for (int i = xoverPoint; i < child1.size(); i++) {
-            child1_1.set(i, child2.get(i));
-            child2_1.set(i, child1.get(i));
+        if (child1.size() == child2.size()) {
+            for (int i = xoverPoint; i < child1.size(); i++) {
+                child1_1.set(i, child2.get(i));
+                child2_1.set(i, child1.get(i));
+            }
+        } else {
+            System.out.print("Something went wrong with XOVER :( ");
         }
 
         Vector<List<RefactoringOperation>> v = new Vector<List<RefactoringOperation>>();

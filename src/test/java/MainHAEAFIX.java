@@ -36,7 +36,7 @@ import java.util.List;
 
 public class MainHAEAFIX {
 
-    private static String SYS = "JF_DATASET-32";
+    private static String SYS = "JF_DATASET-26";
 
     //@Test
     public static void refactorHAEA(int iter, String systems) {
@@ -54,7 +54,7 @@ public class MainHAEAFIX {
 
         //Third Step: Optimization
         // Search Space definition
-        int DIM = 5;
+        int DIM = 6;
         Space<List<RefactoringOperation>> space = new RefactoringOperationSpace(DIM);
 
         // Optimization Function

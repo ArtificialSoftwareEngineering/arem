@@ -100,7 +100,7 @@ public class RefactoringOperationSpace extends Space<List<RefactoringOperation>>
             } else {
                 clon = (List<RefactoringOperation>) Clone.create(x);
                 if (x.size() < n) {
-                    clon.addAll(CreateRefOper.getRefactoringWithOutInheritance(n - x.size()));
+                    clon.addAll(CreateRefOper.get(n - x.size()));
                 }
             }
         } else {

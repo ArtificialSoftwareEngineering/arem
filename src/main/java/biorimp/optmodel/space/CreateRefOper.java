@@ -42,7 +42,8 @@ public class CreateRefOper {
         return setRefactoring;
     }
 
-    static public List<RefactoringOperation> getRefactoringWithInheritance(int n) {
+
+    private static List<RefactoringOperation> getRefactoringWithInheritance(int n) {
         int mapRefactor;
         OBSERVRefactorings oper = new OBSERVRefactorings();
         List<OBSERVRefactoring> refactorings = new ArrayList<OBSERVRefactoring>();
@@ -106,7 +107,7 @@ public class CreateRefOper {
         }
     }
 
-    static public List<RefactoringOperation> getRefactoringWithInheritanceNoFields(int n) {
+    private static List<RefactoringOperation> getRefactoringWithInheritanceNoFields(int n) {
         int mapRefactor;
         OBSERVRefactorings oper = new OBSERVRefactorings();
         List<OBSERVRefactoring> refactorings = new ArrayList<OBSERVRefactoring>();
@@ -158,7 +159,7 @@ public class CreateRefOper {
         }
     }
 
-    static public List<RefactoringOperation> getRefactoringWithOutInheritance(int k) {
+    private static List<RefactoringOperation> getRefactoringWithOutInheritance(int k) {
 
         int mapRefactor;
         OBSERVRefactorings oper = new OBSERVRefactorings();
@@ -207,7 +208,7 @@ public class CreateRefOper {
         }
     }
 
-    static public List<RefactoringOperation> getRefactoringWithOutInheritanceNoFields(int k) {
+    private static List<RefactoringOperation> getRefactoringWithOutInheritanceNoFields(int k) {
 
         int mapRefactor;
         OBSERVRefactorings oper = new OBSERVRefactorings();

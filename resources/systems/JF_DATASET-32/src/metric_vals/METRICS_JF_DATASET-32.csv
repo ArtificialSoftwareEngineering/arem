@@ -1,0 +1,12 @@
+Class,LOC,NOM,RFC,CBO,DIT,MPC,LCOM5,LCOM2,NOC,CYCLO,DAC
+org.jfree.data.statistics.BoxAndWhiskerItem,112.0,13.0,17.0,10.0,1.0,5.0,0.75,0.6923076923076923,0.0,36.0,10.0,
+org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset,364.0,44.0,65.0,14.0,1.0,34.0,0.813953488372093,0.7954545454545454,0.0,83.0,7.0,
+org.jfree.data.statistics.DefaultBoxAndWhiskerXYDataset,200.0,27.0,57.0,20.0,1.0,30.0,0.8605769230769231,0.8287037037037037,0.0,57.0,8.0,
+org.jfree.data.statistics.DefaultMultiValueCategoryDataset,172.0,19.0,53.0,17.0,1.0,36.0,0.7083333333333334,0.6710526315789473,0.0,55.0,4.0,
+org.jfree.data.statistics.DefaultStatisticalCategoryDataset,338.0,29.0,52.0,15.0,1.0,29.0,0.8296703296703296,0.8010610079575597,0.0,76.0,13.0,
+org.jfree.data.statistics.HistogramBin,49.0,8.0,10.0,8.0,1.0,2.0,0.7142857142857143,0.625,0.0,16.0,4.0,
+org.jfree.data.statistics.HistogramDataset,187.0,21.0,46.0,20.0,1.0,26.0,0.8333333333333334,0.7936507936507937,0.0,61.0,3.0,
+org.jfree.data.statistics.HistogramType,47.0,5.0,8.0,7.0,1.0,3.0,0.9,0.72,0.0,21.0,2.0,
+org.jfree.data.statistics.MeanAndStandardDeviation,53.0,8.0,12.0,8.0,1.0,5.0,0.5714285714285714,0.5,0.0,17.0,3.0,
+org.jfree.data.statistics.SimpleHistogramBin,114.0,11.0,14.0,9.0,1.0,4.0,0.6666666666666667,0.6060606060606061,0.0,52.0,6.0,
+org.jfree.data.statistics.SimpleHistogramDataset,156.0,27.0,49.0,18.0,1.0,23.0,0.8461538461538461,0.8148148148148149,0.0,51.0,4.0,

@@ -11,16 +11,6 @@ public class RefKey {
     private String fld;
     private String system;
 
-    public RefKey(String refactorID, String src, String tgt, String mth, String fld, String system) {
-        super();
-        this.refactorID = refactorID;
-        this.src = src;
-        this.tgt = tgt;
-        this.mth = mth;
-        this.fld = fld;
-        this.system = system;
-    }
-
     public RefKey(String refactorID, String src, String tgt, String mth, String fld) {
         super();
         this.refactorID = refactorID;

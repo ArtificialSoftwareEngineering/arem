@@ -4,6 +4,7 @@ import biorimp.optmodel.fitness.RefactorArrayPlainWrite;
 import biorimp.optmodel.mappings.metaphor.MetaphorCode;
 import biorimp.optmodel.operators.RefOperMutation;
 import biorimp.optmodel.space.RefactoringOperationSpace;
+import biorimp.storage.repositories.RegisterRepository;
 import edu.wayne.cs.severe.redress2.entity.refactoring.RefactoringOperation;
 import edu.wayne.cs.severe.redress2.main.MainPredFormulasBIoRIPM;
 import unalcol.descriptors.Descriptors;
@@ -36,8 +37,10 @@ public class MainHillClimbing {
 
     public static void main(String[] argss) {
         String systems = SYS;
+        RegisterRepository repo = RegisterRepository.getInstance();
         for (int i = 0; i < 30; i++) {
             refactorHill(i, systems);
+            repo.truncateTable();
         }
 
     }
@@ -54,7 +57,7 @@ public class MainHillClimbing {
         // Second Step: Create the structures for the prediction
         MainPredFormulasBIoRIPM init = new MainPredFormulasBIoRIPM();
         init.main(args);
-        MetaphorCode metaphor = new MetaphorCode(init);
+        MetaphorCode metaphor = new MetaphorCode(init, iter);
 
         // Third Step: Optimization
         // Search Space definition

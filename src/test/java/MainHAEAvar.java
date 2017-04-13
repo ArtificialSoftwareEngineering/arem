@@ -44,7 +44,7 @@ public class MainHAEAvar {
         //Second Step: Create the structures for the prediction
         MainPredFormulasBIoRIPM init = new MainPredFormulasBIoRIPM();
         init.main(args);
-        MetaphorCode metaphor = new MetaphorCode(init);
+        MetaphorCode metaphor = new MetaphorCode(init, iter);
 
         //Third Step: Optimization
         // Search Space definition

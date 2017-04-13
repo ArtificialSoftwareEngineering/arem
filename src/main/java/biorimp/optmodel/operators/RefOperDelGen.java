@@ -63,7 +63,7 @@ public class RefOperDelGen extends ArityOne<List<RefactoringOperation>> {
         String[] args = {"-l", "Java", "-p", userPath + "\\test_data\\code\\optimization\\src", "-s", "java/optmodel/fitness      "};
         MainPredFormulasBIoRIPM init = new MainPredFormulasBIoRIPM();
         init.main(args);
-        MetaphorCode metaphor = new MetaphorCode(init);
+        MetaphorCode metaphor = new MetaphorCode(init, 0);
 
         System.out.println("*** Generating a genome of 20 genes randomly ***");
         //Creating the Space

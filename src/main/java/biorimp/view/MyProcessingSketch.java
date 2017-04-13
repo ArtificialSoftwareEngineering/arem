@@ -54,7 +54,7 @@ public class MyProcessingSketch extends PApplet {
         //Second Step: Create the structures for the prediction
         MainPredFormulasBIoRIPM init = new MainPredFormulasBIoRIPM();
         init.main(args);
-        metaphor = new MetaphorCode(init);
+        metaphor = new MetaphorCode(init, 0);
         size(1200, 600);
         //size(640, 360, processing.opengl.PGraphics3D);
     }

@@ -6,6 +6,7 @@ import biorimp.optmodel.operators.RefOperClassTransposition;
 import biorimp.optmodel.operators.RefOperMutation;
 import biorimp.optmodel.operators.RefOperXOver;
 import biorimp.optmodel.space.RefactoringOperationSpace;
+import biorimp.storage.repositories.RegisterRepository;
 import edu.wayne.cs.severe.redress2.entity.refactoring.RefactoringOperation;
 import edu.wayne.cs.severe.redress2.main.MainPredFormulasBIoRIPM;
 import unalcol.descriptors.Descriptors;
@@ -50,11 +51,11 @@ public class MainHAEAFIX {
         //Second Step: Create the structures for the prediction
         MainPredFormulasBIoRIPM init = new MainPredFormulasBIoRIPM();
         init.main(args);
-        MetaphorCode metaphor = new MetaphorCode(init);
+        MetaphorCode metaphor = new MetaphorCode(init, iter);
 
         //Third Step: Optimization
         // Search Space definition
-        int DIM = 6;
+        int DIM = 5;
         Space<List<RefactoringOperation>> space = new RefactoringOperationSpace(DIM);
 
         // Optimization Function
@@ -67,8 +68,8 @@ public class MainHAEAFIX {
         ArityOne<List<RefactoringOperation>> transposition = new RefOperClassTransposition();
 
         // Search method
-        int POPSIZE = 40;
-        int MAXITERS = 100;
+        int POPSIZE = 2;
+        int MAXITERS = 5;
 
         @SuppressWarnings("unchecked")
         Operator<List<RefactoringOperation>>[] opers = (Operator<List<RefactoringOperation>>[]) new Operator[3];
@@ -109,8 +110,10 @@ public class MainHAEAFIX {
 
     public static void main(String[] args) {
         String systems = SYS;
+        RegisterRepository repo = RegisterRepository.getInstance();
         for (int i = 0; i < 30; i++) {
             refactorHAEA(i, systems);
+            repo.truncateTable();
         }
     }
 

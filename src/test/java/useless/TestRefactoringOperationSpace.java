@@ -24,7 +24,7 @@ public class TestRefactoringOperationSpace {
         String[] args = {"-l", "Java", "-p", userPath + "\\test_data\\code\\optimization\\src", "-s", "java/optmodel/fitness      "};
         MainPredFormulasBIoRIPM init = new MainPredFormulasBIoRIPM();
         init.main(args);
-        MetaphorCode metaphor = new MetaphorCode(init);
+        MetaphorCode metaphor = new MetaphorCode(init, 0);
 
         //Creating the Space
         RefactoringOperationSpace refactorSpace = new RefactoringOperationSpace(1000);

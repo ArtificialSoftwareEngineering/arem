@@ -278,10 +278,10 @@ public class MainOptimizationRun {
             MainPredFormulasBIoRIPM init = new MainPredFormulasBIoRIPM();
             init.main(args);
             // Third Step: Optimization
-            haeaFix(new MetaphorCode(init), systems[i]);
-            haeaVar(new MetaphorCode(init), systems[i]);
-            hillClimbing(new MetaphorCode(init), systems[i]);
-            simulated(new MetaphorCode(init), systems[i]);
+            haeaFix(new MetaphorCode(init, 0), systems[i]);
+            haeaVar(new MetaphorCode(init, 0), systems[i]);
+            hillClimbing(new MetaphorCode(init, 0), systems[i]);
+            simulated(new MetaphorCode(init, 0), systems[i]);
 
         }
 

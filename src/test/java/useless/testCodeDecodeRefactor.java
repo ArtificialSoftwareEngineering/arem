@@ -21,7 +21,7 @@ public class testCodeDecodeRefactor {
 
         MainPredFormulasBIoRIPM init = new MainPredFormulasBIoRIPM();
         init.main(args);
-        MetaphorCode metaphor = new MetaphorCode(init);
+        MetaphorCode metaphor = new MetaphorCode(init, 0);
         //metaphor.setSysTypeDcls(init.getSysTypeDcls());
         //metaphor.setBuilder(init.getBuilder());
         //metaphor.setLang(init.getLang());

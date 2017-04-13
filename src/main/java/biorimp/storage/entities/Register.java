@@ -1,5 +1,7 @@
 package biorimp.storage.entities;
 
+import biorimp.optmodel.mappings.metaphor.MetaphorCode;
+
 /**
  * Created by developer on 12/29/15.
  */
@@ -33,7 +35,7 @@ public class Register extends Entity {
     }
 
     public Register(String refactor, String metric, double value,
-                    String sources, String targets, String field, String method, String classs, String system) {
+                    String sources, String targets, String field, String method, String classs) {
         super();
         this.refactor = refactor;
         this.metric = metric;
@@ -43,7 +45,7 @@ public class Register extends Entity {
         this.method = method;
         this.field = field;
         this.classs = classs;
-        this.system = system;
+        this.system = MetaphorCode.getSysName();
 
     }
 

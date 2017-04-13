@@ -22,7 +22,7 @@ public class testFitness {
 
         MainPredFormulasBIoRIPM init = new MainPredFormulasBIoRIPM();
         init.main(args);
-        MetaphorCode metaphor = new MetaphorCode(init);
+        MetaphorCode metaphor = new MetaphorCode(init, 0);
 
         //Creating the individual
         /*

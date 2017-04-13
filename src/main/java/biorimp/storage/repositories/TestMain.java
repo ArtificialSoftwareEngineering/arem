@@ -9,7 +9,7 @@ public class TestMain {
 
 
     public static void main(String args[]) {
-        Register r = new Register("1", "123254", 233, "", "", "", "", "", "");
+        Register r = new Register("1", "123254", 233, "", "", "", "", "");
         RegisterRepository repo = new RegisterRepository();
         Register r2 = repo.getRegister("1", "123254", "", "", "", "");
         System.out.println(r2.getValue());

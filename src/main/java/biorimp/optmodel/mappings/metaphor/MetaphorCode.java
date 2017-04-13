@@ -56,16 +56,17 @@ public final class MetaphorCode {
     private static ArrayList<CodeMetric> metrics;
     private static File systemPath;
     private static String sysName;
+    private static int iter;
 
 
 
     private static int COUNTER = 0;
     private static LinkedHashMap<String, LinkedHashMap<String, Double>> prevMetrics;
 
-    public MetaphorCode(MainPredFormulasBIoRIPM init) {
+    public MetaphorCode(MainPredFormulasBIoRIPM init, int iter) {
         this.systemPath = init.getSystemPath();
         this.sysName = init.getSysName();
-
+        this.iter = iter; //<--- 1000 change recent
         this.sysTypeDcls = init.getSysTypeDcls();
         this.builder = init.getBuilder();
         this.lang = init.getLang();

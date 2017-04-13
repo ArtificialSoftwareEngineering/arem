@@ -71,7 +71,7 @@ public class ProcessingRefactor extends PApplet {
         //Second Step: Create the structures for the prediction
         MainPredFormulasBIoRIPM init = new MainPredFormulasBIoRIPM();
         init.main(args);
-        metaphor = new MetaphorCode(init);
+        metaphor = new MetaphorCode(init, 0);
 
         //Third Step: Optimization
         // Search Space definition

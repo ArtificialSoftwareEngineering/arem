@@ -63,7 +63,7 @@ public class RegisterRepository extends Repository<Register> {
             String system = resultSet.getString(Register.COLUMN_SYSTEM);
             double value = resultSet.getDouble(Register.COLUMN_VALUE);
 
-            return new Register(refactor, metric, value, sources, targets, field, method, classs, system);
+            return new Register(refactor, metric, value, sources, targets, field, method, classs);
         } catch (Exception e) {
             return null;
         }
@@ -222,6 +222,21 @@ public class RegisterRepository extends Repository<Register> {
 
         return getRegistersByClass(refKey.getRefactorID(), refKey.getSrc(), refKey.getTgt(),
                 refKey.getMth(), refKey.getFld(), refKey.getSystem());
+    }
+
+    public void truncateTable(){
+        getConnection();
+        if (connection != null) {
+            try {
+                String query = "TRUNCATE TABLE " + TABLE_NAME ;
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.executeUpdate();
+                statement.close();
+                //connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 

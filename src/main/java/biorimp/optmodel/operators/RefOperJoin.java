@@ -30,7 +30,7 @@ public class RefOperJoin extends ArityTwo<List<RefactoringOperation>> {
         String[] args = {"-l", "Java", "-p", userPath + "\\test_data\\code\\optimization\\src", "-s", "java/optmodel/fitness      "};
         MainPredFormulasBIoRIPM init = new MainPredFormulasBIoRIPM();
         init.main(args);
-        MetaphorCode metaphor = new MetaphorCode(init);
+        MetaphorCode metaphor = new MetaphorCode(init, 0);
 
         VarLengthOperRefSpace refactorSpace = new VarLengthOperRefSpace(11, 20);
 

@@ -1,6 +1,5 @@
 package biorimp.storage.repositories;
 
-import biorimp.optmodel.mappings.metaphor.MetaphorCode;
 import biorimp.storage.connection.ConnectionJDBC;
 import biorimp.storage.connection.ConnectionSQLite;
 import biorimp.storage.entities.Entity;
@@ -11,17 +10,12 @@ import java.sql.ResultSet;
 /**
  * Created by developer on 12/29/15.
  */
-public abstract class Repository<T extends Entity> {
+public abstract class RepositorySqlite<T extends Entity> {
     protected Connection connection;
 
     protected void getConnection() {
         try {
-            if( MetaphorCode.isIsSqlIte() ){
-                connection =  ConnectionSQLite.getInstance().connect();
-            }else{
-                connection = ConnectionJDBC.getInstance().obtenerConexion();
-            }
-
+            connection = ConnectionSQLite.getInstance().connect();
         } catch (Exception e) {
             e.printStackTrace();
         }

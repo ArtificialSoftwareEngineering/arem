@@ -35,9 +35,11 @@ import java.util.concurrent.TimeUnit;
  */
 public final class MetaphorCode {
 
+    private final static boolean IsSqlIte = true;
     private final static int DECREASE = 0;
     private final static double penaltyReGeneration = 0.02;
     private final static double penaltyRepair = 0.01;
+
     public static Logger LOGGER = LoggerFactory
             .getLogger(MetaphorCode.class);
     protected static RefactoringReaderBIoRIMP refactorReader;
@@ -260,11 +262,12 @@ public final class MetaphorCode {
         return sysName;
     }
 
+
     public static LoadingCache<RefKey, List<Register>> RefactoringCache() {
         //create a cache for refactorings based on their tgt,src,fld,mth and refid
         LoadingCache<RefKey, List<Register>> refactoringCache = CacheBuilder.newBuilder()
-                .maximumSize(10000) // maximum 1000000 records can be cached
-                .expireAfterAccess(5, TimeUnit.MINUTES) // cache will expire after 30 minutes of access
+                .maximumSize(1000000) // maximum 1000000 records can be cached
+                .expireAfterAccess(20, TimeUnit.MINUTES) // cache will expire after 30 minutes of access
                 .build(
                         new CacheLoader<RefKey, List<Register>>() { // build the cacheloader
                             @Override
@@ -301,6 +304,12 @@ public final class MetaphorCode {
             e.printStackTrace();
         }
     }
+
+
+    public static boolean isIsSqlIte() {
+        return IsSqlIte;
+    }
+
 
     //Method for adding a class into the HashMap
     public void addClasstoHash(String pack, String name) {

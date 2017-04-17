@@ -50,6 +50,7 @@ trait FitnessCacheUtils {
     memoization = MemoizationConfig(
       MethodCallToStringConverter.includeClassConstructorParams))
 
+
   private[fitness] def retrieveMetrics(refactParam: RefactorRegister, acronym: RefAcronym.Value): ClassMap = {
 
     val refKey = matchMetric(acronym = acronym,
@@ -154,7 +155,7 @@ trait FitnessCache extends FitnessCacheUtils {
     res
   }
 
-  //The memoization is dropped, althoug could be activated memoize(summaryDuration)
+  //The memoization is dropped, although could be activated memoize(summaryDuration)
   protected[fitness] def recordarOperacionRefactor(operRef: RefactoringOperation): Future[RefMetric] =
      {
       val acronym = RefAcronym.withName(operRef.getRefType.getAcronym)

@@ -34,6 +34,7 @@ public class ConnectionJDBC {
     public Connection obtenerConexion() throws Exception {
         if (conexion != null)
             return conexion;
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
